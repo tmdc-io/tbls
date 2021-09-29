@@ -3,6 +3,7 @@ package datasource
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/k1LoW/tbls/drivers/oracle"
 	"io"
 	"net/http"
 	"os"
@@ -107,6 +108,9 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 	case "snowflake":
 		s.Name = splitted[2]
 		driver = snowflake.New(db)
+	case "oracle":
+		s.Name = splitted[1]
+		driver = oracle.New(db)
 	default:
 		return s, errors.Errorf("unsupported driver '%s'", u.Driver)
 	}
