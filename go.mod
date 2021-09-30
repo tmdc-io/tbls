@@ -1,4 +1,4 @@
-module github.com/k1LoW/tbls
+module github.com/tmdc-io/tbls
 
 go 1.16
 
