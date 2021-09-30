@@ -97,7 +97,6 @@ func (p *Oracle) Analyze(s *schema.Schema) error {
 		if err != nil {
 			return errors.WithStack(err)
 		}
-
 		name := fmt.Sprintf("%s.%s", tableSchema, tableName)
 
 		fullTableNames = append(fullTableNames, name)
@@ -108,9 +107,9 @@ func (p *Oracle) Analyze(s *schema.Schema) error {
 			Comment: tableComment.String,
 		}
 
-		// (materialized) view definition
+		//(materialized) view definition
 		if tableType == "VIEW" || tableType == "MATERIALIZED VIEW" {
-			viewDefRows, err := p.db.Query(`SELECT pg_get_viewdef($1::oid);`, tableOid)
+			viewDefRows, err := p.db.Query(`select DBMS_METADATA.GET_DDL(:1,:2,:3) from dual`, tableType, tableName, currentSchema)
 			if err != nil {
 				return errors.WithStack(err)
 			}
@@ -121,7 +120,7 @@ func (p *Oracle) Analyze(s *schema.Schema) error {
 				if err != nil {
 					return errors.WithStack(err)
 				}
-				table.Def = fmt.Sprintf("CREATE %s %s AS (\n%s\n)", tableType, tableName, strings.TrimRight(tableDef.String, ";"))
+				table.Def = tableDef.String
 			}
 		}
 
@@ -241,7 +240,7 @@ func (p *Oracle) Analyze(s *schema.Schema) error {
 		}
 
 		// columns
-		columnRows, err := p.db.Query(`select col.column_name, col.data_default, col.nullable, col.data_type, cm.comments from all_tab_cols col INNER JOIN all_tab_comments cm ON cm.table_name=col.table_name WHERE col.owner=:1 AND col.table_name=:2`, currentSchema, tableName)
+		columnRows, err := p.db.Query(`SELECT atc.column_name, atc.data_default, atc.nullable, atc.data_type, ucc.comments FROM user_tab_cols atc INNER JOIN user_col_comments ucc ON (ucc.table_name= atc.table_name and ucc.column_name= atc.column_name) where atc.table_name=:1`, tableName)
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -263,6 +262,7 @@ func (p *Oracle) Analyze(s *schema.Schema) error {
 
 			column := &schema.Column{
 				Name:     columnName,
+				Default:  columnDefaultOrGenerated,
 				Type:     dataType,
 				Comment:  columnComment.String,
 			}
