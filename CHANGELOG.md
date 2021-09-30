@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.50.1](https://github.com/tmdc-io/tbls/compare/v1.50.0...v1.50.1) (2021-09-30)
+
+
 ## [v1.50.0](https://github.com/k1LoW/tbls/compare/v1.49.7...v1.50.0) (2021-04-01)
 
 * Add requiredVersion to define a version constraint [#303](https://github.com/k1LoW/tbls/pull/303) ([k1LoW](https://github.com/k1LoW))
