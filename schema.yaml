@@ -1,15 +1,213 @@
 name: ORCLPDB1.LOCALDOMAIN
 desc: ""
 tables:
-- name: OT.WAREHOUSES
+- name: OT.PRODUCTS
   type: TABLE
   comment: ""
   columns:
-  - name: LOCATION_ID
+  - name: CATEGORY_ID
+    type: NUMBER
+    nullable: false
+    default: null
+    comment: ""
+  - name: DESCRIPTION
+    type: VARCHAR2
+    nullable: true
+    default: null
+    comment: ""
+  - name: PRODUCT_NAME
+    type: VARCHAR2
+    nullable: false
+    default: null
+    comment: ""
+  - name: STANDARD_COST
     type: NUMBER
     nullable: true
     default: null
     comment: ""
+  - name: LIST_PRICE
+    type: NUMBER
+    nullable: true
+    default: null
+    comment: ""
+  - name: PRODUCT_ID
+    type: NUMBER
+    nullable: false
+    default: "\"OT\".\"ISEQ$$_77200\".nextval"
+    comment: ""
+  indexes: []
+  constraints:
+  - name: SYS_C0011006
+    type: PRIMARY KEY
+    def: PRIMARY KEY (PRODUCT_ID)
+    table: OT.PRODUCTS
+    referencedTable: ""
+    columns:
+    - PRODUCT_ID
+    referencedColumns: []
+    comment: ""
+  - name: FK_PRODUCTS_CATEGORIES
+    type: FOREIGN KEY
+    def: FOREIGN KEY (CATEGORY_ID) REFERENCES PRODUCT_CATEGORIES (CATEGORY_ID)
+    table: OT.PRODUCTS
+    referencedTable: PRODUCT_CATEGORIES
+    columns:
+    - CATEGORY_ID
+    referencedColumns:
+    - CATEGORY_ID
+    comment: ""
+  triggers: []
+  def: ""
+- name: OT.CUSTOMERS
+  type: TABLE
+  comment: ""
+  columns:
+  - name: CREDIT_LIMIT
+    type: NUMBER
+    nullable: true
+    default: null
+    comment: ""
+  - name: WEBSITE
+    type: VARCHAR2
+    nullable: true
+    default: null
+    comment: ""
+  - name: NAME
+    type: VARCHAR2
+    nullable: false
+    default: null
+    comment: ""
+  - name: ADDRESS
+    type: VARCHAR2
+    nullable: true
+    default: null
+    comment: ""
+  - name: CUSTOMER_ID
+    type: NUMBER
+    nullable: false
+    default: "\"OT\".\"ISEQ$$_77203\".nextval"
+    comment: ""
+  indexes: []
+  constraints:
+  - name: SYS_C0011010
+    type: PRIMARY KEY
+    def: PRIMARY KEY (CUSTOMER_ID)
+    table: OT.CUSTOMERS
+    referencedTable: ""
+    columns:
+    - CUSTOMER_ID
+    referencedColumns: []
+    comment: ""
+  triggers: []
+  def: ""
+- name: OT.ORDERS
+  type: TABLE
+  comment: ""
+  columns:
+  - name: ORDER_DATE
+    type: DATE
+    nullable: false
+    default: null
+    comment: ""
+  - name: ORDER_ID
+    type: NUMBER
+    nullable: false
+    default: "\"OT\".\"ISEQ$$_77209\".nextval"
+    comment: ""
+  - name: SALESMAN_ID
+    type: NUMBER
+    nullable: true
+    default: null
+    comment: ""
+  - name: CUSTOMER_ID
+    type: NUMBER
+    nullable: false
+    default: null
+    comment: ""
+  - name: STATUS
+    type: VARCHAR2
+    nullable: false
+    default: null
+    comment: ""
+  indexes: []
+  constraints:
+  - name: SYS_C0011021
+    type: PRIMARY KEY
+    def: PRIMARY KEY (ORDER_ID)
+    table: OT.ORDERS
+    referencedTable: ""
+    columns:
+    - ORDER_ID
+    referencedColumns: []
+    comment: ""
+  - name: FK_ORDERS_CUSTOMERS
+    type: FOREIGN KEY
+    def: FOREIGN KEY (CUSTOMER_ID) REFERENCES CUSTOMERS (CUSTOMER_ID)
+    table: OT.ORDERS
+    referencedTable: CUSTOMERS
+    columns:
+    - CUSTOMER_ID
+    referencedColumns:
+    - CUSTOMER_ID
+    comment: ""
+  - name: FK_ORDERS_EMPLOYEES
+    type: FOREIGN KEY
+    def: FOREIGN KEY (SALESMAN_ID) REFERENCES EMPLOYEES (EMPLOYEE_ID)
+    table: OT.ORDERS
+    referencedTable: EMPLOYEES
+    columns:
+    - SALESMAN_ID
+    referencedColumns:
+    - EMPLOYEE_ID
+    comment: ""
+  triggers: []
+  def: ""
+- name: OT.COUNTRIES
+  type: TABLE
+  comment: ""
+  columns:
+  - name: REGION_ID
+    type: NUMBER
+    nullable: true
+    default: null
+    comment: ""
+  - name: COUNTRY_ID
+    type: CHAR
+    nullable: false
+    default: null
+    comment: ""
+  - name: COUNTRY_NAME
+    type: VARCHAR2
+    nullable: false
+    default: null
+    comment: ""
+  indexes: []
+  constraints:
+  - name: SYS_C0010982
+    type: PRIMARY KEY
+    def: PRIMARY KEY (COUNTRY_ID)
+    table: OT.COUNTRIES
+    referencedTable: ""
+    columns:
+    - COUNTRY_ID
+    referencedColumns: []
+    comment: ""
+  - name: FK_COUNTRIES_REGIONS
+    type: FOREIGN KEY
+    def: FOREIGN KEY (REGION_ID) REFERENCES REGIONS (REGION_ID)
+    table: OT.COUNTRIES
+    referencedTable: REGIONS
+    columns:
+    - REGION_ID
+    referencedColumns:
+    - REGION_ID
+    comment: ""
+  triggers: []
+  def: ""
+- name: OT.WAREHOUSES
+  type: TABLE
+  comment: ""
+  columns:
   - name: WAREHOUSE_NAME
     type: VARCHAR2
     nullable: true
@@ -19,6 +217,11 @@ tables:
     type: NUMBER
     nullable: false
     default: "\"OT\".\"ISEQ$$_77191\".nextval"
+    comment: ""
+  - name: LOCATION_ID
+    type: NUMBER
+    nullable: true
+    default: null
     comment: ""
   indexes: []
   constraints:
@@ -110,15 +313,15 @@ tables:
   type: TABLE
   comment: ""
   columns:
-  - name: CATEGORY_NAME
-    type: VARCHAR2
-    nullable: false
-    default: null
-    comment: ""
   - name: CATEGORY_ID
     type: NUMBER
     nullable: false
     default: "\"OT\".\"ISEQ$$_77197\".nextval"
+    comment: ""
+  - name: CATEGORY_NAME
+    type: VARCHAR2
+    nullable: false
+    default: null
     comment: ""
   indexes: []
   constraints:
@@ -137,15 +340,15 @@ tables:
   type: TABLE
   comment: ""
   columns:
-  - name: REGION_NAME
-    type: VARCHAR2
-    nullable: false
-    default: null
-    comment: ""
   - name: REGION_ID
     type: NUMBER
     nullable: false
     default: "\"OT\".\"ISEQ$$_77183\".nextval"
+    comment: ""
+  - name: REGION_NAME
+    type: VARCHAR2
+    nullable: false
+    default: null
     comment: ""
   indexes: []
   constraints:
@@ -164,16 +367,6 @@ tables:
   type: TABLE
   comment: ""
   columns:
-  - name: PHONE
-    type: VARCHAR2
-    nullable: true
-    default: null
-    comment: ""
-  - name: CUSTOMER_ID
-    type: NUMBER
-    nullable: true
-    default: null
-    comment: ""
   - name: FIRST_NAME
     type: VARCHAR2
     nullable: false
@@ -192,6 +385,16 @@ tables:
   - name: EMAIL
     type: VARCHAR2
     nullable: false
+    default: null
+    comment: ""
+  - name: PHONE
+    type: VARCHAR2
+    nullable: true
+    default: null
+    comment: ""
+  - name: CUSTOMER_ID
+    type: NUMBER
+    nullable: true
     default: null
     comment: ""
   indexes: []
@@ -221,16 +424,6 @@ tables:
   type: TABLE
   comment: ""
   columns:
-  - name: LOCATION_ID
-    type: NUMBER
-    nullable: false
-    default: "\"OT\".\"ISEQ$$_77188\".nextval"
-    comment: ""
-  - name: CITY
-    type: VARCHAR2
-    nullable: true
-    default: null
-    comment: ""
   - name: STATE
     type: VARCHAR2
     nullable: true
@@ -247,6 +440,16 @@ tables:
     default: null
     comment: ""
   - name: POSTAL_CODE
+    type: VARCHAR2
+    nullable: true
+    default: null
+    comment: ""
+  - name: LOCATION_ID
+    type: NUMBER
+    nullable: false
+    default: "\"OT\".\"ISEQ$$_77188\".nextval"
+    comment: ""
+  - name: CITY
     type: VARCHAR2
     nullable: true
     default: null
@@ -276,7 +479,7 @@ tables:
   def: ""
 - name: OT.EMPLOYEES
   type: TABLE
-  comment: This is a table for Employee
+  comment: ""
   columns:
   - name: EMAIL
     type: VARCHAR2
@@ -345,17 +548,17 @@ tables:
   type: TABLE
   comment: ""
   columns:
-  - name: PRODUCT_ID
-    type: NUMBER
-    nullable: false
-    default: null
-    comment: ""
   - name: QUANTITY
     type: NUMBER
     nullable: false
     default: null
     comment: ""
   - name: WAREHOUSE_ID
+    type: NUMBER
+    nullable: false
+    default: null
+    comment: ""
+  - name: PRODUCT_ID
     type: NUMBER
     nullable: false
     default: null
@@ -394,285 +597,39 @@ tables:
     comment: ""
   triggers: []
   def: ""
-- name: OT.EMPLOYEE_VIEW
-  type: VIEW
-  comment: ""
-  columns:
-  - name: FULL_NAME
-    type: VARCHAR2
-    nullable: true
-    default: null
-    comment: ""
-  - name: YOS
-    type: NUMBER
-    nullable: true
-    default: null
-    comment: ""
-  - name: EMPLOYEE_ID
-    type: NUMBER
-    nullable: false
-    default: null
-    comment: ""
-  indexes: []
-  constraints: []
-  triggers: []
-  def: |-
-    
-      CREATE OR REPLACE FORCE EDITIONABLE VIEW "OT"."EMPLOYEE_VIEW" ("EMPLOYEE_ID", "FULL_NAME", "YOS") AS 
-      SELECT
-        employee_id,
-        first_name || ' ' || last_name full_name,
-        FLOOR( months_between( CURRENT_DATE, hire_date )/ 12 ) yos
-    FROM
-        employees
-  referencedTables:
-  - employees
-- name: OT.AUDITS
-  type: TABLE
-  comment: ""
-  columns:
-  - name: BY_USER
-    type: VARCHAR2
-    nullable: true
-    default: null
-    comment: ""
-  - name: TRANSACTION_NAME
-    type: VARCHAR2
-    nullable: true
-    default: null
-    comment: ""
-  - name: TABLE_NAME
-    type: VARCHAR2
-    nullable: true
-    default: null
-    comment: ""
-  - name: TRANSACTION_DATE
-    type: DATE
-    nullable: true
-    default: null
-    comment: ""
-  - name: AUDIT_ID
-    type: NUMBER
-    nullable: false
-    default: "\"OT\".\"ISEQ$$_77217\".nextval"
-    comment: ""
-  indexes: []
-  constraints:
-  - name: SYS_C0011035
-    type: PRIMARY KEY
-    def: PRIMARY KEY (AUDIT_ID)
-    table: OT.AUDITS
-    referencedTable: ""
-    columns:
-    - AUDIT_ID
-    referencedColumns: []
-    comment: ""
-  triggers: []
-  def: ""
-- name: OT.PRODUCTS
-  type: TABLE
-  comment: ""
-  columns:
-  - name: CATEGORY_ID
-    type: NUMBER
-    nullable: false
-    default: null
-    comment: ""
-  - name: DESCRIPTION
-    type: VARCHAR2
-    nullable: true
-    default: null
-    comment: ""
-  - name: PRODUCT_NAME
-    type: VARCHAR2
-    nullable: false
-    default: null
-    comment: ""
-  - name: STANDARD_COST
-    type: NUMBER
-    nullable: true
-    default: null
-    comment: ""
-  - name: LIST_PRICE
-    type: NUMBER
-    nullable: true
-    default: null
-    comment: ""
-  - name: PRODUCT_ID
-    type: NUMBER
-    nullable: false
-    default: "\"OT\".\"ISEQ$$_77200\".nextval"
-    comment: ""
-  indexes: []
-  constraints:
-  - name: SYS_C0011006
-    type: PRIMARY KEY
-    def: PRIMARY KEY (PRODUCT_ID)
-    table: OT.PRODUCTS
-    referencedTable: ""
-    columns:
-    - PRODUCT_ID
-    referencedColumns: []
-    comment: ""
-  - name: FK_PRODUCTS_CATEGORIES
-    type: FOREIGN KEY
-    def: FOREIGN KEY (CATEGORY_ID) REFERENCES PRODUCT_CATEGORIES (CATEGORY_ID)
-    table: OT.PRODUCTS
-    referencedTable: PRODUCT_CATEGORIES
-    columns:
-    - CATEGORY_ID
-    referencedColumns:
-    - CATEGORY_ID
-    comment: ""
-  triggers: []
-  def: ""
-- name: OT.CUSTOMERS
-  type: TABLE
-  comment: ""
-  columns:
-  - name: ADDRESS
-    type: VARCHAR2
-    nullable: true
-    default: null
-    comment: ""
-  - name: CUSTOMER_ID
-    type: NUMBER
-    nullable: false
-    default: "\"OT\".\"ISEQ$$_77203\".nextval"
-    comment: ""
-  - name: CREDIT_LIMIT
-    type: NUMBER
-    nullable: true
-    default: null
-    comment: ""
-  - name: WEBSITE
-    type: VARCHAR2
-    nullable: true
-    default: null
-    comment: ""
-  - name: NAME
-    type: VARCHAR2
-    nullable: false
-    default: null
-    comment: ""
-  indexes: []
-  constraints:
-  - name: SYS_C0011010
-    type: PRIMARY KEY
-    def: PRIMARY KEY (CUSTOMER_ID)
-    table: OT.CUSTOMERS
-    referencedTable: ""
-    columns:
-    - CUSTOMER_ID
-    referencedColumns: []
-    comment: ""
-  triggers: []
-  def: ""
-- name: OT.ORDERS
-  type: TABLE
-  comment: ""
-  columns:
-  - name: CUSTOMER_ID
-    type: NUMBER
-    nullable: false
-    default: null
-    comment: ""
-  - name: STATUS
-    type: VARCHAR2
-    nullable: false
-    default: null
-    comment: ""
-  - name: ORDER_DATE
-    type: DATE
-    nullable: false
-    default: null
-    comment: ""
-  - name: ORDER_ID
-    type: NUMBER
-    nullable: false
-    default: "\"OT\".\"ISEQ$$_77209\".nextval"
-    comment: ""
-  - name: SALESMAN_ID
-    type: NUMBER
-    nullable: true
-    default: null
-    comment: ""
-  indexes: []
-  constraints:
-  - name: SYS_C0011021
-    type: PRIMARY KEY
-    def: PRIMARY KEY (ORDER_ID)
-    table: OT.ORDERS
-    referencedTable: ""
-    columns:
-    - ORDER_ID
-    referencedColumns: []
-    comment: ""
-  - name: FK_ORDERS_CUSTOMERS
-    type: FOREIGN KEY
-    def: FOREIGN KEY (CUSTOMER_ID) REFERENCES CUSTOMERS (CUSTOMER_ID)
-    table: OT.ORDERS
-    referencedTable: CUSTOMERS
-    columns:
-    - CUSTOMER_ID
-    referencedColumns:
-    - CUSTOMER_ID
-    comment: ""
-  - name: FK_ORDERS_EMPLOYEES
-    type: FOREIGN KEY
-    def: FOREIGN KEY (SALESMAN_ID) REFERENCES EMPLOYEES (EMPLOYEE_ID)
-    table: OT.ORDERS
-    referencedTable: EMPLOYEES
-    columns:
-    - SALESMAN_ID
-    referencedColumns:
-    - EMPLOYEE_ID
-    comment: ""
-  triggers: []
-  def: ""
-- name: OT.COUNTRIES
-  type: TABLE
-  comment: ""
-  columns:
-  - name: COUNTRY_NAME
-    type: VARCHAR2
-    nullable: false
-    default: null
-    comment: ""
-  - name: REGION_ID
-    type: NUMBER
-    nullable: true
-    default: null
-    comment: ""
-  - name: COUNTRY_ID
-    type: CHAR
-    nullable: false
-    default: null
-    comment: ""
-  indexes: []
-  constraints:
-  - name: SYS_C0010982
-    type: PRIMARY KEY
-    def: PRIMARY KEY (COUNTRY_ID)
-    table: OT.COUNTRIES
-    referencedTable: ""
-    columns:
-    - COUNTRY_ID
-    referencedColumns: []
-    comment: ""
-  - name: FK_COUNTRIES_REGIONS
-    type: FOREIGN KEY
-    def: FOREIGN KEY (REGION_ID) REFERENCES REGIONS (REGION_ID)
-    table: OT.COUNTRIES
-    referencedTable: REGIONS
-    columns:
-    - REGION_ID
-    referencedColumns:
-    - REGION_ID
-    comment: ""
-  triggers: []
-  def: ""
 relations:
+- table: OT.PRODUCTS
+  columns:
+  - CATEGORY_ID
+  parentTable: OT.PRODUCT_CATEGORIES
+  parentColumns:
+  - CATEGORY_ID
+  def: FOREIGN KEY (CATEGORY_ID) REFERENCES PRODUCT_CATEGORIES (CATEGORY_ID)
+  virtual: false
+- table: OT.ORDERS
+  columns:
+  - CUSTOMER_ID
+  parentTable: OT.CUSTOMERS
+  parentColumns:
+  - CUSTOMER_ID
+  def: FOREIGN KEY (CUSTOMER_ID) REFERENCES CUSTOMERS (CUSTOMER_ID)
+  virtual: false
+- table: OT.ORDERS
+  columns:
+  - SALESMAN_ID
+  parentTable: OT.EMPLOYEES
+  parentColumns:
+  - EMPLOYEE_ID
+  def: FOREIGN KEY (SALESMAN_ID) REFERENCES EMPLOYEES (EMPLOYEE_ID)
+  virtual: false
+- table: OT.COUNTRIES
+  columns:
+  - REGION_ID
+  parentTable: OT.REGIONS
+  parentColumns:
+  - REGION_ID
+  def: FOREIGN KEY (REGION_ID) REFERENCES REGIONS (REGION_ID)
+  virtual: false
 - table: OT.WAREHOUSES
   columns:
   - LOCATION_ID
@@ -736,38 +693,6 @@ relations:
   parentColumns:
   - WAREHOUSE_ID
   def: FOREIGN KEY (WAREHOUSE_ID) REFERENCES WAREHOUSES (WAREHOUSE_ID)
-  virtual: false
-- table: OT.PRODUCTS
-  columns:
-  - CATEGORY_ID
-  parentTable: OT.PRODUCT_CATEGORIES
-  parentColumns:
-  - CATEGORY_ID
-  def: FOREIGN KEY (CATEGORY_ID) REFERENCES PRODUCT_CATEGORIES (CATEGORY_ID)
-  virtual: false
-- table: OT.ORDERS
-  columns:
-  - CUSTOMER_ID
-  parentTable: OT.CUSTOMERS
-  parentColumns:
-  - CUSTOMER_ID
-  def: FOREIGN KEY (CUSTOMER_ID) REFERENCES CUSTOMERS (CUSTOMER_ID)
-  virtual: false
-- table: OT.ORDERS
-  columns:
-  - SALESMAN_ID
-  parentTable: OT.EMPLOYEES
-  parentColumns:
-  - EMPLOYEE_ID
-  def: FOREIGN KEY (SALESMAN_ID) REFERENCES EMPLOYEES (EMPLOYEE_ID)
-  virtual: false
-- table: OT.COUNTRIES
-  columns:
-  - REGION_ID
-  parentTable: OT.REGIONS
-  parentColumns:
-  - REGION_ID
-  def: FOREIGN KEY (REGION_ID) REFERENCES REGIONS (REGION_ID)
   virtual: false
 driver:
   name: oracle

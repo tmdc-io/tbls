@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/k1LoW/tbls/ddl"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/tmdc-io/tbls/ddl"
+	"github.com/tmdc-io/tbls/schema"
 	"github.com/pkg/errors"
 )
 

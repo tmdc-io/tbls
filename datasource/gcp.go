@@ -9,9 +9,9 @@ import (
 
 	"cloud.google.com/go/bigquery"
 	cloudspanner "cloud.google.com/go/spanner"
-	"github.com/k1LoW/tbls/drivers/bq"
-	"github.com/k1LoW/tbls/drivers/spanner"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/tmdc-io/tbls/drivers/bq"
+	"github.com/tmdc-io/tbls/drivers/spanner"
+	"github.com/tmdc-io/tbls/schema"
 )
 
 // AnalyzeBigquery analyze `bq://`

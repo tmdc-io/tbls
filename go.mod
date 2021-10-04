@@ -32,10 +32,10 @@ require (
 	github.com/goccy/go-yaml v1.8.9
 	github.com/google/go-cmp v0.5.6
 	github.com/gorilla/csrf v1.6.0 // indirect
-	github.com/gorilla/handlers v1.4.1 // indirect
 	github.com/jackc/fake v0.0.0-20150926172116-812a484cc733 // indirect
 	github.com/jackc/pgx v3.5.0+incompatible // indirect
 	github.com/k1LoW/ffff v0.2.0
+	github.com/k1LoW/tbls v1.50.0
 	github.com/karrick/godirwalk v1.16.1 // indirect
 	github.com/kshvakov/clickhouse v1.3.11 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
@@ -44,7 +44,7 @@ require (
 	github.com/loadoff/excl v0.0.0-20171207172601-c6a9e4c4b4c4
 	github.com/magefile/mage v1.11.0 // indirect
 	github.com/mattn/go-runewidth v0.0.13
-	github.com/mattn/go-sqlite3 v2.0.1+incompatible
+	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	github.com/minio/pkg v1.0.11
 	github.com/openzipkin/zipkin-go v0.1.6 // indirect
 	github.com/pkg/errors v0.9.1

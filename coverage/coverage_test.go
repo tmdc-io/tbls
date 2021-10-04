@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"testing"
 
-	"github.com/k1LoW/tbls/schema"
+	"github.com/tmdc-io/tbls/schema"
 )
 
 func TestMeasure(t *testing.T) {

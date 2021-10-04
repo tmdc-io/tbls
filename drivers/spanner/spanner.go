@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"cloud.google.com/go/spanner"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/tmdc-io/tbls/schema"
 	"github.com/pkg/errors"
 	"google.golang.org/api/iterator"
 )

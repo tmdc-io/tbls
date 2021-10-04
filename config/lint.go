@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/k1LoW/tbls/schema"
+	"github.com/tmdc-io/tbls/schema"
 )
 
 // Lint is the struct for lint config

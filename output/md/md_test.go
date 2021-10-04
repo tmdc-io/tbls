@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/k1LoW/tbls/config"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/tmdc-io/tbls/config"
+	"github.com/tmdc-io/tbls/schema"
 )
 
 var tests = []struct {

@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/aquasecurity/go-version/pkg/version"
-	"github.com/k1LoW/tbls/ddl"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/tmdc-io/tbls/ddl"
+	"github.com/tmdc-io/tbls/schema"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
 )

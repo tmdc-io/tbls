@@ -3,8 +3,8 @@ package coverage
 import (
 	"math"
 
-	"github.com/k1LoW/tbls/output/config"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/tmdc-io/tbls/output/config"
+	"github.com/tmdc-io/tbls/schema"
 )
 
 type Coverage struct {

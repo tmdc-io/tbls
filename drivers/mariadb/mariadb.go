@@ -3,8 +3,8 @@ package mariadb
 import (
 	"database/sql"
 
-	"github.com/k1LoW/tbls/drivers"
-	"github.com/k1LoW/tbls/drivers/mysql"
+	"github.com/tmdc-io/tbls/drivers"
+	"github.com/tmdc-io/tbls/drivers/mysql"
 )
 
 type Mariadb struct {

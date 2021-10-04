@@ -10,8 +10,8 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/k1LoW/tbls/dict"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/tmdc-io/tbls/dict"
+	"github.com/tmdc-io/tbls/schema"
 )
 
 func TestOutputSchema(t *testing.T) {

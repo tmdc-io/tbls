@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/k1LoW/tbls/schema"
+	"github.com/tmdc-io/tbls/schema"
 	_ "github.com/sijms/go-ora/v2"
 	"github.com/xo/dburl"
 )

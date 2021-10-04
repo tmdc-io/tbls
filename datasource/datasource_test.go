@@ -1,14 +1,14 @@
 package datasource
 
 import (
+	_ "github.com/denisenkom/go-mssqldb"
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
+	_ "github.com/sijms/go-ora/v2"
+	"github.com/tmdc-io/tbls/config"
 	"os"
 	"path/filepath"
 	"testing"
-
-	_ "github.com/denisenkom/go-mssqldb"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/k1LoW/tbls/config"
-	_ "github.com/lib/pq"
 )
 
 var tests = []struct {
@@ -17,11 +17,12 @@ var tests = []struct {
 	tableCount    int
 	relationCount int
 }{
-	{config.DSN{URL: "my://root:mypass@localhost:33306/testdb"}, "testdb", 9, 6},
-	{config.DSN{URL: "pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable"}, "testdb", 17, 12},
-	{config.DSN{URL: "json://../testdata/testdb.json"}, "testdb", 11, 12},
-	{config.DSN{URL: "https://raw.githubusercontent.com/k1LoW/tbls/master/testdata/testdb.json"}, "testdb", 11, 12},
-	{config.DSN{URL: "ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb"}, "testdb", 10, 7},
+	//{config.DSN{URL: "my://root:mypass@localhost:33306/testdb"}, "testdb", 9, 6},
+	//{config.DSN{URL: "pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable"}, "testdb", 17, 12},
+	//{config.DSN{URL: "json://../testdata/testdb.json"}, "testdb", 11, 12},
+	//{config.DSN{URL: "https://raw.githubusercontent.com/tmdc-io/tbls/master/testdata/testdb.json"}, "testdb", 11, 12},
+	//{config.DSN{URL: "ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb"}, "testdb", 10, 7},
+	{config.DSN{URL: "or://ot:Orcl1234@localhost:1521/ORCLPDB1.LOCALDOMAIN"}, "ORCLPDB1.LOCALDOMAIN", 10, 7},
 }
 
 func TestMain(m *testing.M) {

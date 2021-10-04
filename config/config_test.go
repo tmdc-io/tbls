@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/k1LoW/tbls/schema"
+	"github.com/tmdc-io/tbls/schema"
 )
 
 func TestLoadDefault(t *testing.T) {

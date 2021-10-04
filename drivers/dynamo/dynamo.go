@@ -6,8 +6,8 @@ import (
 	"regexp"
 
 	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/k1LoW/tbls/dict"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/tmdc-io/tbls/dict"
+	"github.com/tmdc-io/tbls/schema"
 	"github.com/pkg/errors"
 )
 

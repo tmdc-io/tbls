@@ -6,8 +6,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/k1LoW/tbls/dict"
 	"github.com/pkg/errors"
+	"github.com/tmdc-io/tbls/dict"
 )
 
 const (

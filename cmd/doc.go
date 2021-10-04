@@ -25,12 +25,12 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/k1LoW/tbls/cmdutil"
-	"github.com/k1LoW/tbls/config"
-	"github.com/k1LoW/tbls/datasource"
-	"github.com/k1LoW/tbls/output/gviz"
-	"github.com/k1LoW/tbls/output/md"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/tmdc-io/tbls/cmdutil"
+	"github.com/tmdc-io/tbls/config"
+	"github.com/tmdc-io/tbls/datasource"
+	"github.com/tmdc-io/tbls/output/gviz"
+	"github.com/tmdc-io/tbls/output/md"
+	"github.com/tmdc-io/tbls/schema"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )

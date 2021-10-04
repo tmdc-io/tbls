@@ -11,9 +11,9 @@ import (
 	"text/template"
 
 	"github.com/gobuffalo/packr/v2"
-	"github.com/k1LoW/tbls/config"
-	"github.com/k1LoW/tbls/output"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/tmdc-io/tbls/config"
+	"github.com/tmdc-io/tbls/output"
+	"github.com/tmdc-io/tbls/schema"
 	"github.com/mattn/go-runewidth"
 	"github.com/pkg/errors"
 	"github.com/pmezard/go-difflib/difflib"

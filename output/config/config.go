@@ -5,8 +5,8 @@ import (
 	"io"
 
 	"github.com/goccy/go-yaml"
-	"github.com/k1LoW/tbls/config"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/tmdc-io/tbls/config"
+	"github.com/tmdc-io/tbls/schema"
 	"github.com/pkg/errors"
 )
 

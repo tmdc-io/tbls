@@ -23,7 +23,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/k1LoW/tbls/version"
+	"github.com/tmdc-io/tbls/version"
 	"github.com/spf13/cobra"
 )
 

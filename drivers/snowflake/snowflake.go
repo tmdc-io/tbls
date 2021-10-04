@@ -3,7 +3,7 @@ package snowflake
 import (
 	"database/sql"
 
-	"github.com/k1LoW/tbls/schema"
+	"github.com/tmdc-io/tbls/schema"
 	"github.com/pkg/errors"
 	_ "github.com/snowflakedb/gosnowflake"
 )

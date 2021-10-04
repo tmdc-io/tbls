@@ -3,12 +3,10 @@ package oracle
 import (
 	"database/sql"
 	"fmt"
+	"github.com/pkg/errors"
+	"github.com/tmdc-io/tbls/schema"
 	"regexp"
 	"strings"
-
-	"github.com/k1LoW/tbls/ddl"
-	"github.com/k1LoW/tbls/schema"
-	"github.com/pkg/errors"
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
@@ -354,23 +352,6 @@ func (p *Oracle) Analyze(s *schema.Schema) error {
 	}
 
 	s.Relations = relations
-
-	// referenced tables of view
-	for _, t := range s.Tables {
-		if t.Type != "VIEW" && t.Type != "MATERIALIZED VIEW" {
-			continue
-		}
-		for _, rts := range ddl.ParseReferencedTables(t.Def) {
-			rt, err := s.FindTableByName(rts)
-			if err != nil {
-				rt = &schema.Table{
-					Name:     rts,
-					External: true,
-				}
-			}
-			t.ReferencedTables = append(t.ReferencedTables, rt)
-		}
-	}
 
 	return nil
 }

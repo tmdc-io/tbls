@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	_ "github.com/denisenkom/go-mssqldb"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/tmdc-io/tbls/schema"
 	"github.com/xo/dburl"
 )
 
