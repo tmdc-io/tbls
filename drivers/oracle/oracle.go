@@ -15,15 +15,26 @@ var reVersion = regexp.MustCompile(`([0-9]+(\.[0-9]+)*)`)
 // Oracle struct
 type Oracle struct {
 	db     *sql.DB
+	schema string
 	rsMode bool
 }
 
 // New return new Oracle
-func New(db *sql.DB) *Oracle {
+func New(db *sql.DB, url string) *Oracle {
 	return &Oracle{
 		db:     db,
+		schema: extractSchema(url),
 		rsMode: false,
 	}
+}
+
+// extract schema from URL
+func extractSchema(url string) (s string) {
+	schm := strings.Split(url, "?current_schema=");
+	if len(schm)==2{
+		return schm[1]
+	}
+	return ""
 }
 
 // Analyze PostgreSQL database schema
@@ -36,17 +47,29 @@ func (p *Oracle) Analyze(s *schema.Schema) error {
 
 	// current schema
 	var currentSchema string
-	schemaRows, err := p.db.Query(`select sys_context( 'userenv', 'current_schema' ) from dual`)
-	if err != nil {
-		return errors.WithStack(err)
-	}
-	defer schemaRows.Close()
-	for schemaRows.Next() {
-		err := schemaRows.Scan(&currentSchema)
+
+	// if schema provided then use it or else use current schema
+	if len(p.schema) > 0{
+		currentSchema = p.schema
+		schemaRows, err := p.db.Query(fmt.Sprintf("alter session set current_schema = %s", currentSchema))
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer schemaRows.Close()
+	}else{
+		schemaRows, err := p.db.Query(`select sys_context( 'userenv', 'current_schema' ) from dual`)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		defer schemaRows.Close()
+		for schemaRows.Next() {
+			err := schemaRows.Scan(&currentSchema)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+		}
 	}
+
 	s.Driver.Meta.CurrentSchema = currentSchema
 
 	// search_path
@@ -67,13 +90,23 @@ func (p *Oracle) Analyze(s *schema.Schema) error {
 	fullTableNames := []string{}
 
 	// tables
-	tableRows, err := p.db.Query(`select dba_objects.object_id, 
-       dba_objects.object_type, 
-       dba_objects.owner, 
-       dba_objects.object_name, 
-       all_tab_comments.comments 
-		FROM dba_objects INNER JOIN all_tab_comments ON all_tab_comments.table_name=dba_objects.object_name 
-		WHERE dba_objects.owner = :1 AND (dba_objects.object_type='TABLE' OR dba_objects.object_type='VIEW')`, currentSchema)
+	tableRows, err := p.db.Query(`select obj.object_id,
+       obj.object_type,
+       obj.owner,
+       obj.object_name,
+       def.text as definition,
+       comm.comments
+  from all_objects obj
+       left outer join all_views def
+           on obj.owner = def.owner
+          and obj.object_name = def.view_name
+       left outer join all_tab_comments comm
+           on obj.object_name = comm.table_name
+          and obj.owner = comm.owner
+ where obj.object_type in ('TABLE','VIEW')
+   and obj.owner = :1
+ order by obj.owner, 
+        obj.object_name`, currentSchema)
 
 	if err != nil {
 		return errors.WithStack(err)
@@ -89,9 +122,10 @@ func (p *Oracle) Analyze(s *schema.Schema) error {
 			tableType    string
 			tableSchema  string
 			tableName    string
+			definition   sql.NullString
 			tableComment sql.NullString
 		)
-		err := tableRows.Scan(&tableOid, &tableType, &tableSchema, &tableName,  &tableComment)
+		err := tableRows.Scan(&tableOid, &tableType, &tableSchema, &tableName, &definition, &tableComment)
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -102,24 +136,8 @@ func (p *Oracle) Analyze(s *schema.Schema) error {
 		table := &schema.Table{
 			Name:    name,
 			Type:    tableType,
+			Def: 	 definition.String,
 			Comment: tableComment.String,
-		}
-
-		//(materialized) view definition
-		if tableType == "VIEW" || tableType == "MATERIALIZED VIEW" {
-			viewDefRows, err := p.db.Query(`select DBMS_METADATA.GET_DDL(:1,:2,:3) from dual`, tableType, tableName, currentSchema)
-			if err != nil {
-				return errors.WithStack(err)
-			}
-			defer viewDefRows.Close()
-			for viewDefRows.Next() {
-				var tableDef sql.NullString
-				err := viewDefRows.Scan(&tableDef)
-				if err != nil {
-					return errors.WithStack(err)
-				}
-				table.Def = tableDef.String
-			}
 		}
 
 		// constraints
@@ -238,7 +256,24 @@ func (p *Oracle) Analyze(s *schema.Schema) error {
 		}
 
 		// columns
-		columnRows, err := p.db.Query(`SELECT atc.column_name, atc.data_default, atc.nullable, atc.data_type, ucc.comments FROM user_tab_cols atc INNER JOIN user_col_comments ucc ON (ucc.table_name= atc.table_name and ucc.column_name= atc.column_name) where atc.table_name=:1`, tableName)
+		columnRows, err := p.db.Query(`select col.column_name,
+       col.data_default,
+       col.nullable,        
+       col.data_type,
+       comm.comments
+  from all_tables tab
+       inner join all_tab_columns col 
+           on col.owner = tab.owner 
+          and col.table_name = tab.table_name          
+       left join all_col_comments comm
+           on col.owner = comm.owner
+          and col.table_name = comm.table_name 
+          and col.column_name = comm.column_name 
+ where col.owner =:1
+ and tab.table_name =:2  
+ order by col.owner,
+       col.table_name, 
+       col.column_name`, currentSchema, tableName)
 		if err != nil {
 			return errors.WithStack(err)
 		}

@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/pkg/errors"
 	"github.com/tmdc-io/tbls/config"
 	"github.com/tmdc-io/tbls/drivers"
 	"github.com/tmdc-io/tbls/drivers/mariadb"
@@ -21,7 +22,6 @@ import (
 	"github.com/tmdc-io/tbls/drivers/snowflake"
 	"github.com/tmdc-io/tbls/drivers/sqlite"
 	"github.com/tmdc-io/tbls/schema"
-	"github.com/pkg/errors"
 	"github.com/xo/dburl"
 )
 
@@ -110,7 +110,7 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 		driver = snowflake.New(db)
 	case "oracle":
 		s.Name = splitted[1]
-		driver = oracle.New(db)
+		driver = oracle.New(db, urlstr)
 	default:
 		return s, errors.Errorf("unsupported driver '%s'", u.Driver)
 	}
