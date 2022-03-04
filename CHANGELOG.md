@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.50.1-2](https://github.com/tmdc-io/tbls/compare/v1.50.0...v1.50.1-2) (2022-03-04)
+
+
+## [v1.50.1-2](https://github.com/tmdc-io/tbls/compare/v1.50.0...v1.50.1-2) (2022-03-04)
+
+
 ## [v1.50.1](https://github.com/tmdc-io/tbls/compare/v1.50.0...v1.50.1) (2021-09-30)
 
 
