@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/tmdc-io/tbls/schema"
 	_ "github.com/sijms/go-ora/v2"
+	"github.com/tmdc-io/tbls/schema"
 	"github.com/xo/dburl"
 )
 
@@ -26,7 +26,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestAnalyzeView(t *testing.T) {
-	driver := New(db)
+	driver := New(db,"or://system:Oradoc_db1@localhost:1521/ORCLCDB.LOCALDOMAIN")
 	err := driver.Analyze(s)
 	if err != nil {
 		t.Errorf("%v", err)
@@ -39,7 +39,7 @@ func TestAnalyzeView(t *testing.T) {
 }
 
 func TestExtraDef(t *testing.T) {
-	driver := New(db)
+	driver := New(db,"or://system:Oradoc_db1@localhost:1521/ORCLCDB.LOCALDOMAIN")
 	if err := driver.Analyze(s); err != nil {
 		t.Fatal(err)
 	}
@@ -54,7 +54,7 @@ func TestExtraDef(t *testing.T) {
 }
 
 func TestInfo(t *testing.T) {
-	driver := New(db)
+	driver := New(db,"or://system:Oradoc_db1@localhost:1521/ORCLCDB.LOCALDOMAIN")
 	d, err := driver.Info()
 	if err != nil {
 		t.Errorf("%v", err)
