@@ -1,30 +1,158 @@
-name: connect_test
+name: AKASHY
 desc: ""
 tables:
-- name: Chains.Sizes
-  type: BASIC TABLE
+- name: AASHISH.CUSTOMERS
+  type: TABLE
   comment: ""
   columns:
-  - name: ChainID
-    type: int
+  - name: ADDRESS
+    type: VARCHAR2
     nullable: true
     default: null
     comment: ""
-  - name: width
-    type: decimal
+  - name: CREDIT_LIMIT
+    type: NUMBER
+    nullable: true
+    default: null
+    comment: limit upto 100000
+  - name: CUSTOMER_ID
+    type: NUMBER
+    nullable: false
+    default: "\"AASHISH\".\"ISEQ$$_25630\".nextval"
+    comment: ""
+  - name: NAME
+    type: VARCHAR2
+    nullable: false
+    default: null
+    comment: ""
+  - name: WEBSITE
+    type: VARCHAR2
+    nullable: true
+    default: null
+    comment: ""
+  indexes: []
+  constraints:
+  - name: SYS_C005988
+    type: PRIMARY KEY
+    def: PRIMARY KEY (CUSTOMER_ID)
+    table: AASHISH.CUSTOMERS
+    referencedTable: ""
+    columns:
+    - CUSTOMER_ID
+    referencedColumns: []
+    comment: ""
+  triggers: []
+  def: ""
+- name: AASHISH.CUSTOMERS_VIEW
+  type: VIEW
+  comment: ""
+  columns:
+  - name: ADDRESS
+    type: VARCHAR2
+    nullable: true
+    default: null
+    comment: ""
+  - name: CUSTOMER_ID
+    type: NUMBER
+    nullable: false
+    default: null
+    comment: ""
+  - name: NAME
+    type: VARCHAR2
+    nullable: false
+    default: null
+    comment: ""
+  - name: WEBSITE
+    type: VARCHAR2
     nullable: true
     default: null
     comment: ""
   indexes: []
   constraints: []
   triggers: []
+  def: |-
+    SELECT
+        ADDRESS,
+        CUSTOMER_ID, NAME,
+        WEBSITE 
+    FROM AASHISH.CUSTOMERS
+- name: AASHISH.PRODUCT_CATEGORIES
+  type: TABLE
+  comment: ""
+  columns:
+  - name: CATEGORY_ID
+    type: NUMBER
+    nullable: false
+    default: "\"AASHISH\".\"ISEQ$$_25626\".nextval"
+    comment: ""
+  - name: CATEGORY_NAME
+    type: VARCHAR2
+    nullable: false
+    default: null
+    comment: ""
+  indexes: []
+  constraints:
+  - name: SYS_C005985
+    type: PRIMARY KEY
+    def: PRIMARY KEY (CATEGORY_ID)
+    table: AASHISH.PRODUCT_CATEGORIES
+    referencedTable: ""
+    columns:
+    - CATEGORY_ID
+    referencedColumns: []
+    comment: ""
+  triggers: []
   def: ""
+- name: AASHISH.REGIONS
+  type: TABLE
+  comment: ""
+  columns:
+  - name: REGION_ID
+    type: NUMBER
+    nullable: false
+    default: "\"AASHISH\".\"ISEQ$$_25619\".nextval"
+    comment: ""
+  - name: REGION_NAME
+    type: VARCHAR2
+    nullable: false
+    default: null
+    comment: ""
+  indexes: []
+  constraints:
+  - name: SYS_C005982
+    type: PRIMARY KEY
+    def: PRIMARY KEY (REGION_ID)
+    table: AASHISH.REGIONS
+    referencedTable: ""
+    columns:
+    - REGION_ID
+    referencedColumns: []
+    comment: ""
+  triggers: []
+  def: ""
+- name: AASHISH.REGIONS_VIEW
+  type: VIEW
+  comment: ""
+  columns:
+  - name: REGION_ID
+    type: NUMBER
+    nullable: false
+    default: null
+    comment: ""
+  - name: REGION_NAME
+    type: VARCHAR2
+    nullable: false
+    default: null
+    comment: ""
+  indexes: []
+  constraints: []
+  triggers: []
+  def: SELECT "REGION_ID","REGION_NAME" FROM AASHISH.REGIONS
 relations: []
 driver:
-  name: sqlserver
-  databaseVersion: |-
-    Microsoft SQL Server 2019 (RTM-CU15) (KB5008996) - 15.0.4198.2 (X64) 
-    	Jan 12 2022 22:30:08 
-    	Copyright (C) 2019 Microsoft Corporation
-    	Developer Edition (64-bit) on Linux (Ubuntu 20.04.3 LTS) <X64>
-  meta: null
+  name: oracle
+  databaseVersion: 19.0.0.0.0
+  meta:
+    currentSchema: AASHISH
+    searchPaths:
+    - AASHISH

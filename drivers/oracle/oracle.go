@@ -256,24 +256,24 @@ func (p *Oracle) Analyze(s *schema.Schema) error {
 		}
 
 		// columns
-		columnRows, err := p.db.Query(`select col.column_name,
+		columnRows, err := p.db.Query(`SELECT col.column_name,
        col.data_default,
-       col.nullable,        
+       col.nullable,
        col.data_type,
        comm.comments
-  from all_tables tab
-       inner join all_tab_columns col 
-           on col.owner = tab.owner 
-          and col.table_name = tab.table_name          
-       left join all_col_comments comm
-           on col.owner = comm.owner
-          and col.table_name = comm.table_name 
-          and col.column_name = comm.column_name 
- where col.owner =:1
- and tab.table_name =:2  
- order by col.owner,
-       col.table_name, 
-       col.column_name`, currentSchema, tableName)
+FROM   sys.all_tab_columns col
+       LEFT JOIN sys.all_views v
+              ON col.owner = v.owner
+                 AND col.table_name = v.view_name
+       LEFT JOIN all_col_comments comm
+              ON col.owner = comm.owner
+                 AND col.table_name = comm.table_name
+                 AND col.column_name = comm.column_name
+WHERE  col.owner =:1
+       AND col.table_name =:2
+ORDER  BY col.owner,
+          col.table_name,
+          col.column_name`, currentSchema, tableName)
 		if err != nil {
 			return errors.WithStack(err)
 		}
