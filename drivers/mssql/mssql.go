@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/pkg/errors"
 	"github.com/tmdc-io/tbls/ddl"
 	"github.com/tmdc-io/tbls/schema"
-	"github.com/pkg/errors"
 )
 
 var defaultSchemaName = "dbo"
@@ -20,6 +20,7 @@ var reSystemNamed = regexp.MustCompile(`_[^_]+$`)
 // Mssql struct
 type Mssql struct {
 	db *sql.DB
+	schema string
 }
 
 type relationLink struct {
@@ -30,10 +31,20 @@ type relationLink struct {
 }
 
 // New ...
-func New(db *sql.DB) *Mssql {
+func New(db *sql.DB, url string) *Mssql {
 	return &Mssql{
 		db: db,
+		schema: extractSchema(url),
 	}
+}
+
+// extract schema from URL
+func extractSchema(url string) (s string) {
+	schm := strings.Split(url, "?current_schema=");
+	if len(schm)==2{
+		return schm[1]
+	}
+	return ""
 }
 
 func (m *Mssql) Analyze(s *schema.Schema) error {
@@ -44,13 +55,12 @@ func (m *Mssql) Analyze(s *schema.Schema) error {
 	s.Driver = d
 
 	// tables and comments
-	tableRows, err := m.db.Query(`
-SELECT schema_name(schema_id) AS table_schema, o.name, o.object_id, o.type, cast(e.value as NVARCHAR(MAX)) AS table_comment
-FROM sys.objects AS o
-LEFT JOIN sys.extended_properties AS e ON
-e.major_id = o.object_id AND e.name = 'MS_Description' AND e.minor_id = 0
-WHERE type IN ('U', 'V')  ORDER BY OBJECT_ID
-`)
+	tableRows, err := tableRows(m)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	defer tableRows.Close()
+
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -516,4 +526,26 @@ func convertSystemNamed(name string, isSytemNamed bool) string {
 		return reSystemNamed.ReplaceAllString(name, "*")
 	}
 	return name
+}
+
+// tables and comments
+func tableRows(m *Mssql)  (*sql.Rows, error) {
+	if len(m.schema) > 0{
+		// if schema provided then use it or else use current schema
+		return m.db.Query(`
+				SELECT schema_name(schema_id) AS table_schema, o.name, o.object_id, o.type, cast(e.value as NVARCHAR(MAX)) AS table_comment
+				FROM sys.objects AS o
+				LEFT JOIN sys.extended_properties AS e ON
+				e.major_id = o.object_id AND e.name = 'MS_Description' AND e.minor_id = 0
+				WHERE type IN ('U', 'V') AND schema_name(schema_id) = @p1 ORDER BY OBJECT_ID
+				`,m.schema)
+	}else {
+		return m.db.Query(`
+				SELECT schema_name(schema_id) AS table_schema, o.name, o.object_id, o.type, cast(e.value as NVARCHAR(MAX)) AS table_comment
+				FROM sys.objects AS o
+				LEFT JOIN sys.extended_properties AS e ON
+				e.major_id = o.object_id AND e.name = 'MS_Description' AND e.minor_id = 0
+				WHERE type IN ('U', 'V') ORDER BY OBJECT_ID
+				`)
+	}
 }
