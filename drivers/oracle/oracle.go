@@ -51,11 +51,6 @@ func (p *Oracle) Analyze(s *schema.Schema) error {
 	// if schema provided then use it or else use current schema
 	if len(p.schema) > 0{
 		currentSchema = p.schema
-		schemaRows, err := p.db.Query(fmt.Sprintf("alter session set current_schema = %s", currentSchema))
-		if err != nil {
-			return errors.WithStack(err)
-		}
-		defer schemaRows.Close()
 	}else{
 		schemaRows, err := p.db.Query(`select sys_context( 'userenv', 'current_schema' ) from dual`)
 		if err != nil {
