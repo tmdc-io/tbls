@@ -53,6 +53,7 @@ func (m *Mssql) Analyze(s *schema.Schema) error {
 		return errors.WithStack(err)
 	}
 	s.Driver = d
+	s.Driver.Meta.CurrentSchema = m.schema
 
 	// tables and comments
 	tableRows, err := tableRows(m)
@@ -480,6 +481,7 @@ func (m *Mssql) Info() (*schema.Driver, error) {
 	d := &schema.Driver{
 		Name:            "sqlserver",
 		DatabaseVersion: v,
+		Meta:            &schema.DriverMeta{},
 	}
 	return d, nil
 }
