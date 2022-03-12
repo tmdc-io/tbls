@@ -25,16 +25,18 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	sortpkg "sort"
 	"strconv"
 	"strings"
 
+	"errors"
+	"github.com/spf13/cobra"
 	"github.com/tmdc-io/tbls/cmdutil"
 	"github.com/tmdc-io/tbls/config"
 	"github.com/tmdc-io/tbls/datasource"
 	"github.com/tmdc-io/tbls/output/json"
 	"github.com/tmdc-io/tbls/version"
-	"github.com/spf13/cobra"
 )
 
 // adjust is a flag on whethre to adjust the notation width of the table
@@ -257,6 +259,7 @@ func getExtSubCmds(prefix string) ([]string, error) {
 }
 
 func printError(err error) {
+	err = redactSecrets(err)
 	env := os.Getenv("DEBUG")
 	debug, _ := strconv.ParseBool(env)
 	if env != "" && debug {
@@ -264,6 +267,12 @@ func printError(err error) {
 	} else {
 		fmt.Println(err)
 	}
+}
+
+func redactSecrets(err error) error {
+	regex := regexp.MustCompile(`\/\/\w+:.+@`)
+	result := regex.ReplaceAllString(err.Error(), "//redacted:redacted@")
+	return errors.New(result)
 }
 
 func unique(paths []string) []string {
