@@ -284,33 +284,33 @@ GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_
 		}
 
 		/// check_constraints
-		checkRows, err := m.db.Query(`
-SELECT name, definition, is_system_named
-FROM sys.check_constraints
-WHERE parent_object_id = object_id(@p1)
-`, fmt.Sprintf("%s.%s", tableSchema, tableName))
-		if err != nil {
-			return errors.WithStack(err)
-		}
-		defer checkRows.Close()
-		for checkRows.Next() {
-			var (
-				checkName          string
-				checkDef           string
-				checkIsSystemNamed bool
-			)
-			err = checkRows.Scan(&checkName, &checkDef, &checkIsSystemNamed)
-			if err != nil {
-				return errors.WithStack(err)
-			}
-			constraint := &schema.Constraint{
-				Name:  convertSystemNamed(checkName, checkIsSystemNamed),
-				Type:  typeCheck,
-				Def:   fmt.Sprintf("CHECK%s", checkDef),
-				Table: &table.Name,
-			}
-			constraints = append(constraints, constraint)
-		}
+//		checkRows, err := m.db.Query(`
+//SELECT name, definition, is_system_named
+//FROM sys.check_constraints
+//WHERE parent_object_id = object_id(@p1)
+//`, fmt.Sprintf("%s.%s", tableSchema, tableName))
+//		if err != nil {
+//			return errors.WithStack(err)
+//		}
+//		defer checkRows.Close()
+//		for checkRows.Next() {
+//			var (
+//				checkName          string
+//				checkDef           string
+//				checkIsSystemNamed bool
+//			)
+//			err = checkRows.Scan(&checkName, &checkDef, &checkIsSystemNamed)
+//			if err != nil {
+//				return errors.WithStack(err)
+//			}
+//			constraint := &schema.Constraint{
+//				Name:  convertSystemNamed(checkName, checkIsSystemNamed),
+//				Type:  typeCheck,
+//				Def:   fmt.Sprintf("CHECK%s", checkDef),
+//				Table: &table.Name,
+//			}
+//			constraints = append(constraints, constraint)
+//		}
 
 		table.Constraints = constraints
 
