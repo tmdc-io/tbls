@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 	"github.com/tmdc-io/tbls/config"
 	"github.com/tmdc-io/tbls/drivers"
 	"github.com/tmdc-io/tbls/drivers/mariadb"
@@ -69,7 +70,6 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 		u.RawQuery = values.Encode()
 		urlstr = u.String()
 	}
-
 	db, err := dburl.Open(urlstr)
 	defer db.Close()
 	if err != nil {
@@ -85,35 +85,60 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 	case "postgres":
 		s.Name = splitted[1]
 		if u.Scheme == "rs" || u.Scheme == "redshift" {
+			log.Infof("Driver : '%s' and Scheme '%s'",u.Driver, u.Scheme)
+			log.Info("Obtaining connection...")
 			driver = redshift.New(db)
+			log.Info("Connection established")
 		} else {
+			log.Infof("Driver : '%s' and Scheme '%s'",u.Driver, u.Scheme)
+			log.Info("Obtaining connection...")
 			driver = postgres.New(db)
+			log.Info("Connection established")
 		}
 	case "mysql":
 		s.Name = splitted[1]
 		if u.Scheme == "maria" || u.Scheme == "mariadb" {
+			log.Infof("Driver : '%s' and Scheme '%s'",u.Driver, u.Scheme)
+			log.Info("Obtaining connection...")
 			driver, err = mariadb.New(db, opts...)
+			log.Info("Connection established")
 		} else {
+			log.Infof("Driver : '%s' and Scheme '%s'",u.Driver, u.Scheme)
+			log.Info("Obtaining connection...")
 			driver, err = mysql.New(db, opts...)
+			log.Info("Connection established")
 		}
 		if err != nil {
 			return s, err
 		}
 	case "sqlite3":
 		s.Name = splitted[len(splitted)-1]
+		log.Infof("Driver : '%s' and Scheme '%s'",u.Driver, u.Scheme)
+		log.Info("Obtaining connection...")
 		driver = sqlite.New(db)
+		log.Info("Connection established")
 	case "sqlserver":
 		s.Name = splitted[1]
+		log.Infof("Driver : '%s' and Scheme '%s'",u.Driver, u.Scheme)
+		log.Info("Obtaining connection...")
 		driver = mssql.New(db, urlstr)
+		log.Info("Connection established")
 	case "snowflake":
 		s.Name = splitted[2]
+		log.Infof("Driver : '%s' and Scheme '%s'",u.Driver, u.Scheme)
+		log.Info("Obtaining connection...")
 		driver = snowflake.New(db)
+		log.Info("Connection established")
 	case "oracle":
 		s.Name = splitted[1]
+		log.Infof("Driver : '%s' and Scheme '%s'",u.Driver, u.Scheme)
+		log.Info("Obtaining connection...")
 		driver = oracle.New(db, urlstr)
+		log.Info("Connection established")
 	default:
 		return s, errors.Errorf("unsupported driver '%s'", u.Driver)
 	}
+	log.Info("Analyzing...")
 	err = driver.Analyze(s)
 	if err != nil {
 		return s, err
