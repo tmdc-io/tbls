@@ -2,15 +2,17 @@ package postgres
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"regexp"
 	"strings"
 
 	"github.com/aquasecurity/go-version/pkg/version"
-	"github.com/tmdc-io/tbls/ddl"
-	"github.com/tmdc-io/tbls/schema"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
+	"github.com/tmdc-io/tbls/ddl"
+	"github.com/tmdc-io/tbls/schema"
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
@@ -40,7 +42,9 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 
 	// current schema
 	var currentSchema string
-	schemaRows, err := p.db.Query(`SELECT current_schema()`)
+	const CurrentSchemaQuery = "SELECT current_schema()";
+	log.Infof("Running query to get current shcema : '%s\n'",CurrentSchemaQuery)
+	schemaRows, err := p.db.Query(CurrentSchemaQuery)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -50,29 +54,37 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		log.Infof("Output : '%s'",currentSchema)
 	}
+	log.Infof("set current schema : '%s'",currentSchema)
+
 	s.Driver.Meta.CurrentSchema = currentSchema
 
 	// search_path
 	var searchPaths string
-	pathRows, err := p.db.Query(`SHOW search_path`)
+	const searchPathQuery = "SHOW search_path"
+	log.Infof("Running query to get paths : '%s\n'",searchPathQuery)
+	pathRows, err := p.db.Query(searchPathQuery)
 	if err != nil {
 		return errors.WithStack(err)
 	}
 	defer pathRows.Close()
 	for pathRows.Next() {
 		err := pathRows.Scan(&searchPaths)
+		log.Infof("Output : '%s'",searchPaths)
 		if err != nil {
 			return errors.WithStack(err)
 		}
 	}
-	s.Driver.Meta.SearchPaths = strings.Split(searchPaths, ", ")
+	var paths = strings.Split(searchPaths, ", ");
+	s.Driver.Meta.SearchPaths = paths
+	log.Infof("Set searchPaths : '%s'",paths)
+
 
 	fullTableNames := []string{}
 
 	// tables
-	tableRows, err := p.db.Query(`
-SELECT
+	const tablesDetailsQuery = `SELECT
     cls.oid AS oid,
     cls.relname AS table_name,
     CASE
@@ -88,7 +100,9 @@ INNER JOIN pg_namespace AS ns ON cls.relnamespace = ns.oid
 LEFT JOIN pg_description AS descr ON cls.oid = descr.objoid AND descr.objsubid = 0
 WHERE ns.nspname NOT IN ('pg_catalog', 'information_schema')
 AND cls.relkind IN ('r', 'p', 'v', 'f', 'm')
-ORDER BY oid`)
+ORDER BY oid`;
+	log.Infof("Running query to get tables : '%s\n'",tablesDetailsQuery)
+	tableRows, err := p.db.Query(tablesDetailsQuery)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -105,7 +119,9 @@ ORDER BY oid`)
 			tableSchema  string
 			tableComment sql.NullString
 		)
+
 		err := tableRows.Scan(&tableOid, &tableName, &tableType, &tableSchema, &tableComment)
+
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -119,10 +135,15 @@ ORDER BY oid`)
 			Type:    tableType,
 			Comment: tableComment.String,
 		}
+		table_json, _ := json.Marshal(table)
+		log.Infof("%s\n", table_json)
 
 		// (materialized) view definition
 		if tableType == "VIEW" || tableType == "MATERIALIZED VIEW" {
-			viewDefRows, err := p.db.Query(`SELECT pg_get_viewdef($1::oid);`, tableOid)
+			log.Infof("Table type '%s", tableType)
+			const viewDefinitionQuery = "SELECT pg_get_viewdef($1::oid);"
+			log.Infof("Running query : '%s\n'",viewDefinitionQuery)
+			viewDefRows, err := p.db.Query(viewDefinitionQuery, tableOid)
 			if err != nil {
 				return errors.WithStack(err)
 			}
@@ -133,11 +154,14 @@ ORDER BY oid`)
 				if err != nil {
 					return errors.WithStack(err)
 				}
+				log.Infof("Table definition : '%s'",tableDef.String)
 				table.Def = fmt.Sprintf("CREATE %s %s AS (\n%s\n)", tableType, tableName, strings.TrimRight(tableDef.String, ";"))
+				log.Infof("Final table definition : '%s'",table.Def)
 			}
 		}
 
 		// constraints
+		log.Infof("Running query to get '%s' constraints : '%s\n'", name, p.queryForConstraints())
 		constraintRows, err := p.db.Query(p.queryForConstraints(), tableOid)
 		if err != nil {
 			return errors.WithStack(err)
@@ -171,12 +195,17 @@ ORDER BY oid`)
 				ReferencedColumns: arrayRemoveNull(constraintReferencedColumnNames),
 				Comment:           constraintComment.String,
 			}
+			constraintJson, _ := json.Marshal(constraint)
+			log.Infof("%s\n", constraintJson)
 
 			if constraintType == "f" {
 				relation := &schema.Relation{
 					Table: table,
 					Def:   constraintDef,
 				}
+				tableRelation, _ := json.Marshal(relation)
+				log.Infof("Table '%s' relation %s\n", name, tableRelation)
+
 				relations = append(relations, relation)
 			}
 			constraints = append(constraints, constraint)
@@ -185,14 +214,14 @@ ORDER BY oid`)
 
 		// triggers
 		if !p.rsMode {
-			triggerRows, err := p.db.Query(`
-SELECT tgname, pg_get_triggerdef(trig.oid), descr.description AS comment
+			const triggerQuery = `SELECT tgname, pg_get_triggerdef(trig.oid), descr.description AS comment
 FROM pg_trigger AS trig
 LEFT JOIN pg_description AS descr ON trig.oid = descr.objoid
 WHERE tgisinternal = false
 AND tgrelid = $1::oid
-ORDER BY tgrelid
-`, tableOid)
+ORDER BY tgrelid`
+			log.Infof("Running query to get '%s' triggers : '%s\n'", name, triggerQuery)
+			triggerRows, err := p.db.Query(triggerQuery, tableOid)
 			if err != nil {
 				return errors.WithStack(err)
 			}
@@ -214,6 +243,9 @@ ORDER BY tgrelid
 					Def:     triggerDef,
 					Comment: triggerComment.String,
 				}
+				triggerJson, _ := json.Marshal(trigger)
+				log.Infof("%s\n", triggerJson)
+
 				triggers = append(triggers, trigger)
 			}
 			table.Triggers = triggers
@@ -221,9 +253,11 @@ ORDER BY tgrelid
 
 		// columns
 		columnStmt, err := p.queryForColumns(s.Driver.DatabaseVersion)
+
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		log.Infof("Running query to get '%s' columns : '%s\n'", name, columnStmt)
 		columnRows, err := p.db.Query(columnStmt, tableOid)
 		if err != nil {
 			return errors.WithStack(err)
@@ -250,6 +284,7 @@ ORDER BY tgrelid
 				Nullable: isNullable,
 				Comment:  columnComment.String,
 			}
+
 			switch attrgenerated.String {
 			case "":
 				column.Default = columnDefaultOrGenerated
@@ -258,11 +293,15 @@ ORDER BY tgrelid
 			default:
 				return errors.Errorf("unsupported pg_attribute.attrgenerated '%s'", attrgenerated.String)
 			}
+
+			columnsJson, _ := json.Marshal(column)
+			log.Infof("%s\n", columnsJson)
 			columns = append(columns, column)
 		}
 		table.Columns = columns
 
 		// indexes
+		log.Infof("Running query to get '%s' indexes : '%s\n'", name, p.queryForIndexes())
 		indexRows, err := p.db.Query(p.queryForIndexes(), tableOid)
 		if err != nil {
 			return errors.WithStack(err)
@@ -288,14 +327,18 @@ ORDER BY tgrelid
 				Columns: arrayRemoveNull(indexColumnNames),
 				Comment: indexComment.String,
 			}
-
+			indexJson, _ := json.Marshal(index)
+			log.Infof("%s\n", indexJson)
 			indexes = append(indexes, index)
 		}
 		table.Indexes = indexes
 
 		tables = append(tables, table)
-	}
+		tablesJson, _ := json.Marshal(tables)
 
+		log.Infof("Final table '%s' struct", name)
+		log.Infof("%s\n\n\n\n", tablesJson)
+	}
 	s.Tables = tables
 
 	// Relations
@@ -360,19 +403,20 @@ ORDER BY tgrelid
 			t.ReferencedTables = append(t.ReferencedTables, rt)
 		}
 	}
-
 	return nil
 }
 
 // Info return schema.Driver
 func (p *Postgres) Info() (*schema.Driver, error) {
 	var v string
-	row := p.db.QueryRow(`SELECT version();`)
+	const selectVersionQuery = "SELECT version();"
+	log.Infof("Running query : '%s\n'",selectVersionQuery)
+	row := p.db.QueryRow(selectVersionQuery)
 	err := row.Scan(&v)
 	if err != nil {
 		return nil, err
 	}
-
+	log.Infof("Output : '%s'",v)
 	name := "postgres"
 	if p.rsMode {
 		name = "redshift"
