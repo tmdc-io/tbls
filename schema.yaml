@@ -1,0 +1,2687 @@
+name: dev
+desc: ""
+tables:
+- name: public._airbyte_raw_exchange_rates
+  type: BASE TABLE
+  comment: ""
+  columns:
+  - name: _airbyte_ab_id
+    type: varchar(256)
+    nullable: false
+    default: null
+    comment: ""
+  - name: _airbyte_data
+    type: super
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_emitted_at
+    type: timestamp with time zone
+    nullable: true
+    default: ('now'::text)::timestamp with time zone
+    comment: ""
+  indexes:
+  - name: _airbyte_raw_exchange_rates_pkey
+    def: CREATE UNIQUE INDEX _airbyte_raw_exchange_rates_pkey ON _airbyte_raw_exchange_rates USING btree (_airbyte_ab_id)
+    table: public._airbyte_raw_exchange_rates
+    columns: []
+    comment: ""
+  constraints:
+  - name: _airbyte_raw_exchange_rates_pkey
+    type: PRIMARY KEY
+    def: PRIMARY KEY (_airbyte_ab_id)
+    table: public._airbyte_raw_exchange_rates
+    referencedTable: ""
+    columns: []
+    referencedColumns: []
+    comment: ""
+  triggers: []
+  def: ""
+- name: public.exchange_rates
+  type: BASE TABLE
+  comment: ""
+  columns:
+  - name: base
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: date
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: rates
+    type: super
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_ab_id
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_emitted_at
+    type: timestamp with time zone
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_normalized_at
+    type: timestamp without time zone
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_exchange_rates_hashid
+    type: varchar(32)
+    nullable: true
+    default: null
+    comment: ""
+  indexes: []
+  constraints: []
+  triggers: []
+  def: ""
+- name: public.exchange_rates_rates
+  type: BASE TABLE
+  comment: ""
+  columns:
+  - name: _airbyte_exchange_rates_hashid
+    type: varchar(32)
+    nullable: true
+    default: null
+    comment: ""
+  - name: aed
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: afn
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: all
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: amd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: ang
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: aoa
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: ars
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: aud
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: awg
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: azn
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: bam
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: bbd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: bdt
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: bgn
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: bhd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: bif
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: bmd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: bnd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: bob
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: brl
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: bsd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: btc
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: btn
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: bwp
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: byn
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: byr
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: bzd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: cad
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: cdf
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: chf
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: clf
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: clp
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: cny
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: cop
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: crc
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: cuc
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: cup
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: cve
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: czk
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: djf
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: dkk
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: dop
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: dzd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: egp
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: ern
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: etb
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: eur
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: fjd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: fkp
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: gbp
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: gel
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: ggp
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: ghs
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: gip
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: gmd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: gnf
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: gtq
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: gyd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: hkd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: hnl
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: hrk
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: htg
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: huf
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: idr
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: ils
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: imp
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: inr
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: iqd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: irr
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: isk
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: jep
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: jmd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: jod
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: jpy
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: kes
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: kgs
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: khr
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: kmf
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: kpw
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: krw
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: kwd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: kyd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: kzt
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: lak
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: lbp
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: lkr
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: lrd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: lsl
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: ltl
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: lvl
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: lyd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: mad
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: mdl
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: mga
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: mkd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: mmk
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: mnt
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: mop
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: mro
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: mur
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: mvr
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: mwk
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: mxn
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: myr
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: mzn
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: nad
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: ngn
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: nio
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: nok
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: npr
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: nzd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: omr
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: pab
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: pen
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: pgk
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: php
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: pkr
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: pln
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: pyg
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: qar
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: ron
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: rsd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: rub
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: rwf
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: sar
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: sbd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: scr
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: sdg
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: sek
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: sgd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: shp
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: sll
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: sos
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: srd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: std
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: svc
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: syp
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: szl
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: thb
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: tjs
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: tmt
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: tnd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: top
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: try
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: ttd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: twd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: tzs
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: uah
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: ugx
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: usd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: uyu
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: uzs
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: vef
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: vnd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: vuv
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: wst
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: xaf
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: xag
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: xau
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: xcd
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: xdr
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: xof
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: xpf
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: yer
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: zar
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: zmk
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: zmw
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: zwl
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_ab_id
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_emitted_at
+    type: timestamp with time zone
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_normalized_at
+    type: timestamp without time zone
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_rates_hashid
+    type: varchar(32)
+    nullable: true
+    default: null
+    comment: ""
+  indexes: []
+  constraints: []
+  triggers: []
+  def: ""
+- name: public._airbyte_raw_account
+  type: BASE TABLE
+  comment: ""
+  columns:
+  - name: _airbyte_ab_id
+    type: varchar(256)
+    nullable: false
+    default: null
+    comment: ""
+  - name: _airbyte_data
+    type: super
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_emitted_at
+    type: timestamp with time zone
+    nullable: true
+    default: ('now'::text)::timestamp with time zone
+    comment: ""
+  indexes:
+  - name: _airbyte_raw_account_pkey
+    def: CREATE UNIQUE INDEX _airbyte_raw_account_pkey ON _airbyte_raw_account USING btree (_airbyte_ab_id)
+    table: public._airbyte_raw_account
+    columns: []
+    comment: ""
+  constraints:
+  - name: _airbyte_raw_account_pkey
+    type: PRIMARY KEY
+    def: PRIMARY KEY (_airbyte_ab_id)
+    table: public._airbyte_raw_account
+    referencedTable: ""
+    columns: []
+    referencedColumns: []
+    comment: ""
+  triggers: []
+  def: ""
+- name: public.account
+  type: BASE TABLE
+  comment: ""
+  columns:
+  - name: id
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: fax
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: sic
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: name
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: site
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: type
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: phone
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: jigsaw
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: rating
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: sla__c
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: ownerid
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: sicdesc
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: website
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: industry
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: parentid
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: photourl
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: active__c
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: isdeleted
+    type: boolean
+    nullable: true
+    default: null
+    comment: ""
+  - name: naicscode
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: naicsdesc
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: ownership
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: dunsnumber
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: tradestyle
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: billingcity
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: cleanstatus
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: createdbyid
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: createddate
+    type: timestamp with time zone
+    nullable: true
+    default: null
+    comment: ""
+  - name: description
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: yearstarted
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: billingstate
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: shippingcity
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: tickersymbol
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: accountnumber
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: accountsource
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: annualrevenue
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: billingstreet
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: shippingstate
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: billingaddress
+    type: super
+    nullable: true
+    default: null
+    comment: ""
+  - name: billingcountry
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: dandbcompanyid
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: lastvieweddate
+    type: timestamp with time zone
+    nullable: true
+    default: null
+    comment: ""
+  - name: masterrecordid
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: shippingstreet
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: systemmodstamp
+    type: timestamp with time zone
+    nullable: true
+    default: null
+    comment: ""
+  - name: billinglatitude
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: jigsawcompanyid
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: shippingaddress
+    type: super
+    nullable: true
+    default: null
+    comment: ""
+  - name: shippingcountry
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: billinglongitude
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: lastactivitydate
+    type: date
+    nullable: true
+    default: null
+    comment: ""
+  - name: lastmodifiedbyid
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: lastmodifieddate
+    type: timestamp with time zone
+    nullable: true
+    default: null
+    comment: ""
+  - name: operatinghoursid
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: shippinglatitude
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: billingpostalcode
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: numberofemployees
+    type: bigint
+    nullable: true
+    default: null
+    comment: ""
+  - name: shippinglongitude
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: lastreferenceddate
+    type: timestamp with time zone
+    nullable: true
+    default: null
+    comment: ""
+  - name: slaserialnumber__c
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: shippingpostalcode
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: customerpriority__c
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: numberoflocations__c
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: slaexpirationdate__c
+    type: date
+    nullable: true
+    default: null
+    comment: ""
+  - name: upsellopportunity__c
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: billinggeocodeaccuracy
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: shippinggeocodeaccuracy
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_ab_id
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_emitted_at
+    type: timestamp with time zone
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_normalized_at
+    type: timestamp without time zone
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_account_hashid
+    type: varchar(32)
+    nullable: true
+    default: null
+    comment: ""
+  indexes: []
+  constraints: []
+  triggers: []
+  def: ""
+- name: public.account_billingaddress
+  type: BASE TABLE
+  comment: ""
+  columns:
+  - name: _airbyte_account_hashid
+    type: varchar(32)
+    nullable: true
+    default: null
+    comment: ""
+  - name: city
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: state
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: street
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: country
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: latitude
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: longitude
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: postalcode
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: geocodeaccuracy
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_ab_id
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_emitted_at
+    type: timestamp with time zone
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_normalized_at
+    type: timestamp without time zone
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_billingaddress_hashid
+    type: varchar(32)
+    nullable: true
+    default: null
+    comment: ""
+  indexes: []
+  constraints: []
+  triggers: []
+  def: ""
+- name: public.account_shippingaddress
+  type: BASE TABLE
+  comment: ""
+  columns:
+  - name: _airbyte_account_hashid
+    type: varchar(32)
+    nullable: true
+    default: null
+    comment: ""
+  - name: city
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: state
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: street
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: country
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: latitude
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: longitude
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: postalcode
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: geocodeaccuracy
+    type: varchar(65535)
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_ab_id
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_emitted_at
+    type: timestamp with time zone
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_normalized_at
+    type: timestamp without time zone
+    nullable: true
+    default: null
+    comment: ""
+  - name: _airbyte_shippingaddress_hashid
+    type: varchar(32)
+    nullable: true
+    default: null
+    comment: ""
+  indexes: []
+  constraints: []
+  triggers: []
+  def: ""
+- name: public.city_01
+  type: BASE TABLE
+  comment: ""
+  columns:
+  - name: __metadata_dataos_run_mapper_id
+    type: varchar(256)
+    nullable: false
+    default: null
+    comment: ""
+  - name: city_id
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: zip_code
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: city_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: county_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: state_code
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: state_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: version
+    type: varchar(256)
+    nullable: false
+    default: null
+    comment: ""
+  - name: ts_city
+    type: timestamp without time zone
+    nullable: false
+    default: null
+    comment: ""
+  indexes: []
+  constraints: []
+  triggers: []
+  def: ""
+- name: public.countries
+  type: BASE TABLE
+  comment: ""
+  columns:
+  - name: __metadata_dataos_run_mapper_id
+    type: varchar(256)
+    nullable: false
+    default: null
+    comment: ""
+  - name: id
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: iso3
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: iso2
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: numeric_code
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: phone_code
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: capital
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: currency
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: currency_symbol
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: tld
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: native
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: region
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: subregion
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: latitude
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: longitude
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: emoji
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: emojiu
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: version
+    type: bigint
+    nullable: true
+    default: null
+    comment: ""
+  indexes: []
+  constraints: []
+  triggers: []
+  def: ""
+- name: public.test01
+  type: BASE TABLE
+  comment: ""
+  columns:
+  - name: a
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: b
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  indexes: []
+  constraints: []
+  triggers: []
+  def: ""
+- name: public.test_item_data
+  type: BASE TABLE
+  comment: ""
+  columns:
+  - name: __metadata_dataos_run_mapper_id
+    type: varchar(256)
+    nullable: false
+    default: null
+    comment: ""
+  - name: item_sk
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: site
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_no
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: brand_no
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: brand_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_size
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: class_cd
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: class_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: category_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: category_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: group_cd
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: group_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: sub_group_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: sub_group_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: division_cd
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: division_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: division_ind
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: company
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: vintage
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: commodity_type
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: suppl_no
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: suppl_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: sap_suppl_no
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: parent_suppl
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: bottles_case
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: upc_cd
+    type: bigint
+    nullable: true
+    default: null
+    comment: ""
+  - name: status
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: proof
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: reptg_case_ratio
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: case_conv_fact
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: domestic_import
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: allocated_item_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: combo_item_flg
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: blitz_item_flg
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: deactivate_dt
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: sfa_include
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: publication_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_type_cd
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: grandfather_flg
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: political_buy_flg
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: ordrable_item_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: state_tax_paid_flg
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: flavor_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: flavor_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: region_id
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: region_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: country_of_origin
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: country_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: uom
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: unit_cube_volume
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: unit_ship_weight
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: hlday_gift_item_flg
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: privat_lbl_item_flg
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_closeout_ind
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: liters_bottle
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: corp_item_sk
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: auxillary_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: auxillary_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: ca_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: chain_div
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: demand_forecast
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: dual_commission
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: eff_order_cycle
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: financial_class_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: financial_class_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: future_type
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: gallons_per_bottle
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: label_image_file
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: layers_per_pallet
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: cases_per_pallet
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: units_per_layer
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: married_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: non_revenue_item
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: product_image_file
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: regular_inv
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: safety_stock
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: scc_cd
+    type: bigint
+    nullable: true
+    default: null
+    comment: ""
+  - name: trans_atlantic_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: div_mgr_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: suppl_status_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: suppl_address_1
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: suppl_address_2
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: suppl_city
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: suppl_state
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: suppl_zip_cd
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: suppl_zip_ext
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: suppl_county
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: suppl_country
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: suppl_shipping_point
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: alt_brand_no
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: alt_brand_type
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: alt_brand_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: alt_brand_category_type
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: alt_suppl_no
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: alt_suppl_type
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: alt_suppl_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: alt_suppl_fiscal_month
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: modified_user
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: effective_from_dt
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: effective_thru_dt
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: load_dt
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: modified_dt
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: current_ind
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: src_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: active_ind
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: pack_upc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: unit_heigt
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: unit_width
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: unit_legth
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: company_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: company_short_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: textsearch
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: selling_company_cd
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: rpt_company_code
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: rpt_company_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: rpt_company_short_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: rpt_div_company_code
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: rpt_div_company_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: rpt_div_company_short_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: frontline_price
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: last_posting_date
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: is_deleted
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: ssc_item_ind
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_reason_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_status_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: brand_manager_no
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: brand_manager_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: breakage_amt
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: source_system
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: corp_item_no
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_reduction_code
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: selling_company_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_status_descr
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: check_sum
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: juice_percent
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: pack_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: pack_cd_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_planning_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: functional_area
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: availability_check_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: var_sls_unit_allow_ind
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: price_group_1_no
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: price_group_1_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: price_group_2_no
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: price_group_2_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_sold_by_cases_ind
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_premise_type_sold_at
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_portal_visibility
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: sugar_taxable_ind
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: california_item_redemption
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: california_redemption_amt
+    type: double precision
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_updated
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_separate_pricing_ind
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_reserve_flag
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: cost_code
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_sales_company
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_service_level_group
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: brand_manager_email
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: otc_portal_community_visibility_cd
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: publish_item_ind
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_reduction_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: otc_portal_community_visibility_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: publish_item_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: commodity_type_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_repackage_ind
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: value_added_packaging_ind
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_sampled_ind
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: upc_ean_check_digit
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_status_activity_change_dt
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_active_reason_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_status_reason_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: excise_tax_rate
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_innovation_desc
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: item_linked_to_site_dt
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: laid_in_cost_per_case
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  indexes: []
+  constraints: []
+  triggers: []
+  def: ""
+- name: public.city_view
+  type: VIEW
+  comment: ""
+  columns:
+  - name: __metadata_dataos_run_mapper_id
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: city_id
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: zip_code
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: city_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: county_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: state_code
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: state_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: version
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: ts_city
+    type: timestamp without time zone
+    nullable: true
+    default: null
+    comment: ""
+  indexes: []
+  constraints: []
+  triggers: []
+  def: |-
+    CREATE VIEW city_view AS (
+    SELECT c.__metadata_dataos_run_mapper_id, c.city_id, c.zip_code, c.city_name, c.county_name, c.state_code, c.state_name, c.version, c.ts_city FROM city_01 c
+    )
+  referencedTables:
+  - public.city_01
+- name: public.city_view1
+  type: VIEW
+  comment: ""
+  columns:
+  - name: __metadata_dataos_run_mapper_id
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: city_id
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: zip_code
+    type: integer
+    nullable: true
+    default: null
+    comment: ""
+  - name: city_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: county_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: state_code
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: state_name
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: version
+    type: varchar(256)
+    nullable: true
+    default: null
+    comment: ""
+  - name: ts_city
+    type: timestamp without time zone
+    nullable: true
+    default: null
+    comment: ""
+  indexes: []
+  constraints: []
+  triggers: []
+  def: |-
+    CREATE VIEW city_view1 AS (
+    SELECT city_01.__metadata_dataos_run_mapper_id, city_01.city_id, city_01.zip_code, city_01.city_name, city_01.county_name, city_01.state_code, city_01.state_name, city_01.version, city_01.ts_city FROM city_01
+    )
+  referencedTables:
+  - public.city_01
+relations: []
+driver:
+  name: redshift
+  databaseVersion: PostgreSQL 8.0.2 on i686-pc-linux-gnu, compiled by GCC gcc (GCC) 3.4.2 20041017 (Red Hat 3.4.2-6.fc3), Redshift 1.0.39251
+  meta:
+    currentSchema: public
+    searchPaths:
+    - $user
+    - public

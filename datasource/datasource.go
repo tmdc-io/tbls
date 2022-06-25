@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/tmdc-io/tbls/drivers/oracle"
+	"github.com/tmdc-io/tbls/utils"
 	"io"
 	"net/http"
 	"os"
@@ -28,6 +29,9 @@ import (
 
 // Analyze database
 func Analyze(dsn config.DSN) (*schema.Schema, error) {
+	//Set up logger
+	utils.SetupLogging()
+
 	urlstr := dsn.URL
 	if strings.Index(urlstr, "https://") == 0 || strings.Index(urlstr, "http://") == 0 {
 		return AnalyzeHTTPResource(dsn)

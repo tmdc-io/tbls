@@ -44,32 +44,32 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 	// current schema
 	var currentSchema string
 	const CurrentSchemaQuery = "SELECT current_schema()";
-	log.Infof("Running query to get current shcema : '%s\n'",CurrentSchemaQuery)
+	log.Infof("Running query to get current shcema : '%s'",CurrentSchemaQuery)
 	schemaRows, err := p.db.Query(CurrentSchemaQuery)
 	if err != nil {
-		log.Errorf("Failed to query current shcema, err : '%s' ",err.Error())
+		log.Errorf("Failed to query current shcema, err : '%s'\n\n ",err.Error())
 		return errors.WithStack(err)
 	}
 	defer schemaRows.Close()
 	for schemaRows.Next() {
 		err := schemaRows.Scan(&currentSchema)
 		if err != nil {
-			log.Errorf("Failed to scan schemaRows, err : '%s' ",err.Error())
+			log.Errorf("Failed to scan schemaRows, err : '%s'\n\n ",err.Error())
 			return errors.WithStack(err)
 		}
 		log.Infof("Output : '%s'",currentSchema)
 	}
-	log.Infof("set current schema : '%s'",currentSchema)
+	log.Infof("set current schema : '%s'\n\n",currentSchema)
 
 	s.Driver.Meta.CurrentSchema = currentSchema
 
 	// search_path
 	var searchPaths string
 	const searchPathQuery = "SHOW search_path"
-	log.Infof("Running query to get paths : '%s\n'",searchPathQuery)
+	log.Infof("Running query to get paths : '%s'",searchPathQuery)
 	pathRows, err := p.db.Query(searchPathQuery)
 	if err != nil {
-		log.Errorf("Failed query to get search paths, err : '%s' ",err.Error())
+		log.Errorf("Failed query to get search paths, err : '%s'\n\n ",err.Error())
 		return errors.WithStack(err)
 	}
 	defer pathRows.Close()
@@ -77,39 +77,23 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 		err := pathRows.Scan(&searchPaths)
 		log.Infof("Output : '%s'",searchPaths)
 		if err != nil {
-			log.Errorf("Failed to scan pathRows, err : '%s' ",err.Error())
+			log.Errorf("Failed to scan pathRows, err : '%s\n\n' ",err.Error())
 			return errors.WithStack(err)
 		}
 	}
 	var paths = strings.Split(searchPaths, ", ");
 	s.Driver.Meta.SearchPaths = paths
-	log.Infof("Set searchPaths : '%s'",paths)
+	log.Infof("Set searchPaths : '%s\n\n'",paths)
 
 
 	fullTableNames := []string{}
 
 	// tables
-	const tablesDetailsQuery = `SELECT
-    cls.oid AS oid,
-    cls.relname AS table_name,
-    CASE
-        WHEN cls.relkind IN ('r', 'p') THEN 'BASE TABLE'
-        WHEN cls.relkind = 'v' THEN 'VIEW'
-        WHEN cls.relkind = 'm' THEN 'MATERIALIZED VIEW'
-        WHEN cls.relkind = 'f' THEN 'FOREIGN TABLE'
-    END AS table_type,
-    ns.nspname AS table_schema,
-    descr.description AS table_comment
-FROM pg_class AS cls
-INNER JOIN pg_namespace AS ns ON cls.relnamespace = ns.oid
-LEFT JOIN pg_description AS descr ON cls.oid = descr.objoid AND descr.objsubid = 0
-WHERE ns.nspname NOT IN ('pg_catalog', 'information_schema')
-AND cls.relkind IN ('r', 'p', 'v', 'f', 'm')
-ORDER BY oid`;
-	log.Infof("Running query to get tables : '%s\n'",tablesDetailsQuery)
+	var tablesDetailsQuery = "SELECT\n    cls.oid AS oid,\n    cls.relname AS table_name,\n    CASE\n        WHEN cls.relkind IN ('r', 'p') THEN 'BASE TABLE'\n        WHEN cls.relkind = 'v' THEN 'VIEW'\n        WHEN cls.relkind = 'm' THEN 'MATERIALIZED VIEW'\n        WHEN cls.relkind = 'f' THEN 'FOREIGN TABLE'\n    END AS table_type,\n    ns.nspname AS table_schema,\n    descr.description AS table_comment\nFROM pg_class AS cls\nINNER JOIN pg_namespace AS ns ON cls.relnamespace = ns.oid\nLEFT JOIN pg_description AS descr ON cls.oid = descr.objoid AND descr.objsubid = 0\nWHERE ns.nspname NOT IN ('pg_catalog', 'information_schema') \nAND ns.nspname ='"+currentSchema+"' \nAND cls.relkind IN ('r', 'p', 'v', 'f', 'm')\nORDER BY oid";
+	log.Infof("Running query to get tables : '%s'",tablesDetailsQuery)
 	tableRows, err := p.db.Query(tablesDetailsQuery)
 	if err != nil {
-		log.Errorf("Failed to query tables detail, err : '%s' ",err.Error())
+		log.Errorf("Failed to query tables detail, err : '%s\n\n' ",err.Error())
 		return errors.WithStack(err)
 	}
 	defer tableRows.Close()
@@ -129,7 +113,7 @@ ORDER BY oid`;
 		err := tableRows.Scan(&tableOid, &tableName, &tableType, &tableSchema, &tableComment)
 
 		if err != nil {
-			log.Errorf("Failed to scan tableRows, err : '%s' ",err.Error())
+			log.Errorf("Failed to scan tableRows, err : '%s\n\n' ",err.Error())
 			return errors.WithStack(err)
 		}
 
@@ -143,16 +127,16 @@ ORDER BY oid`;
 			Comment: tableComment.String,
 		}
 		table_json, _ := json.Marshal(table)
-		log.Infof("%s\n", table_json)
+		log.Debugf("Table '%s' json:  %s\n\n", name,  table_json)
 
 		// (materialized) view definition
 		if tableType == "VIEW" || tableType == "MATERIALIZED VIEW" {
-			log.Infof("Table type '%s", tableType)
+			log.Infof("Table type '%s\n", tableType)
 			const viewDefinitionQuery = "SELECT pg_get_viewdef($1::oid);"
 			log.Infof("Running query : '%s\n'",viewDefinitionQuery)
 			viewDefRows, err := p.db.Query(viewDefinitionQuery, tableOid)
 			if err != nil {
-				log.Errorf("Failed to query view definition of '%s', err : '%s' ",name, err.Error())
+				log.Errorf("Failed to query view definition of '%s', err : '%s'\n\n ",name, err.Error())
 				return errors.WithStack(err)
 			}
 			defer viewDefRows.Close()
@@ -160,20 +144,20 @@ ORDER BY oid`;
 				var tableDef sql.NullString
 				err := viewDefRows.Scan(&tableDef)
 				if err != nil {
-					log.Errorf("Failed to scan viewDefRows, err : '%s' ",err.Error())
+					log.Errorf("Failed to scan viewDefRows, err : '%s\n\n' ",err.Error())
 					return errors.WithStack(err)
 				}
 				log.Infof("Table definition : '%s'",tableDef.String)
 				table.Def = fmt.Sprintf("CREATE %s %s AS (\n%s\n)", tableType, tableName, strings.TrimRight(tableDef.String, ";"))
-				log.Infof("Final table definition : '%s'",table.Def)
+				log.Debugf("Final table definition : '%s'\n\n",table.Def)
 			}
 		}
 
 		// constraints
-		log.Infof("Running query to get '%s' constraints : '%s\n'", name, p.queryForConstraints())
+		log.Infof("Running query to get '%s' constraints : '%s'", name, p.queryForConstraints())
 		constraintRows, err := p.db.Query(p.queryForConstraints(), tableOid)
 		if err != nil {
-			log.Errorf("Failed to query constraints of '%s', err : '%s' ",name, err.Error())
+			log.Errorf("Failed to query constraints of '%s', err : '%s'\n\n ",name, err.Error())
 			return errors.WithStack(err)
 		}
 		defer constraintRows.Close()
@@ -192,7 +176,7 @@ ORDER BY oid`;
 			)
 			err = constraintRows.Scan(&constraintName, &constraintDef, &constraintType, &constraintReferencedTable, pq.Array(&constraintColumnNames), pq.Array(&constraintReferencedColumnNames), &constraintComment)
 			if err != nil {
-				log.Errorf("Failed to scan constraintRows, err : '%s' ", err.Error())
+				log.Errorf("Failed to scan constraintRows, err : '%s'\n\n ", err.Error())
 				return errors.WithStack(err)
 			}
 			rt := constraintReferencedTable.String
@@ -207,7 +191,7 @@ ORDER BY oid`;
 				Comment:           constraintComment.String,
 			}
 			constraintJson, _ := json.Marshal(constraint)
-			log.Infof("%s\n", constraintJson)
+			log.Debugf("Constraing json : %s\n\n", constraintJson)
 
 			if constraintType == "f" {
 				relation := &schema.Relation{
@@ -215,7 +199,7 @@ ORDER BY oid`;
 					Def:   constraintDef,
 				}
 				tableRelation, _ := json.Marshal(relation)
-				log.Infof("Table '%s' relation %s\n", name, tableRelation)
+				log.Debugf("Table '%s' relation %s\n\n", name, tableRelation)
 
 				relations = append(relations, relation)
 			}
@@ -231,10 +215,10 @@ LEFT JOIN pg_description AS descr ON trig.oid = descr.objoid
 WHERE tgisinternal = false
 AND tgrelid = $1::oid
 ORDER BY tgrelid`
-			log.Infof("Running query to get '%s' triggers : '%s\n'", name, triggerQuery)
+			log.Infof("Running query to get '%s' triggers : '%s'", name, triggerQuery)
 			triggerRows, err := p.db.Query(triggerQuery, tableOid)
 			if err != nil {
-				log.Errorf("Failed to query triggers of '%s', err : '%s' ",name, err.Error())
+				log.Errorf("Failed to query triggers of '%s', err : '%s'\n\n ",name, err.Error())
 				return errors.WithStack(err)
 			}
 			defer triggerRows.Close()
@@ -248,7 +232,7 @@ ORDER BY tgrelid`
 				)
 				err = triggerRows.Scan(&triggerName, &triggerDef, &triggerComment)
 				if err != nil {
-					log.Errorf("Failed to scan triggerRows of '%s', err : '%s' ",name, err.Error())
+					log.Errorf("Failed to scan triggerRows of '%s', err : '%s'\n\n ",name, err.Error())
 					return errors.WithStack(err)
 				}
 				trigger := &schema.Trigger{
@@ -257,7 +241,7 @@ ORDER BY tgrelid`
 					Comment: triggerComment.String,
 				}
 				triggerJson, _ := json.Marshal(trigger)
-				log.Infof("%s\n", triggerJson)
+				log.Debugf("Trigger: %s\n\n", triggerJson)
 
 				triggers = append(triggers, trigger)
 			}
@@ -268,13 +252,13 @@ ORDER BY tgrelid`
 		columnStmt, err := p.queryForColumns(s.Driver.DatabaseVersion)
 
 		if err != nil {
-			log.Errorf("Failed to create query for column statement., err : '%s' ", err.Error())
+			log.Errorf("Failed to create query for column statement., err : '%s'\n ", err.Error())
 			return errors.WithStack(err)
 		}
-		log.Infof("Running query to get '%s' columns : '%s\n'", name, columnStmt)
+		log.Infof("Running query to get '%s' columns : '%s'", name, columnStmt)
 		columnRows, err := p.db.Query(columnStmt, tableOid)
 		if err != nil {
-			log.Errorf("Failed to query columns of '%s', err : '%s' ",name, err.Error())
+			log.Errorf("Failed to query columns of '%s', err : '%s'\n\n ",name, err.Error())
 			return errors.WithStack(err)
 		}
 		defer columnRows.Close()
@@ -291,7 +275,7 @@ ORDER BY tgrelid`
 			)
 			err = columnRows.Scan(&columnName, &columnDefaultOrGenerated, &attrgenerated, &isNullable, &dataType, &columnComment)
 			if err != nil {
-				log.Errorf("Failed to scan columnRows of '%s', err : '%s' ",name, err.Error())
+				log.Errorf("Failed to scan columnRows of '%s'\n\n, err : '%s' ",name, err.Error())
 				return errors.WithStack(err)
 			}
 			column := &schema.Column{
@@ -311,16 +295,16 @@ ORDER BY tgrelid`
 			}
 
 			columnsJson, _ := json.Marshal(column)
-			log.Infof("%s\n", columnsJson)
+			log.Debugf("%s\n\n", columnsJson)
 			columns = append(columns, column)
 		}
 		table.Columns = columns
 
 		// indexes
-		log.Infof("Running query to get '%s' indexes : '%s\n'", name, p.queryForIndexes())
+		log.Infof("Running query to get '%s' indexes : '%s'", name, p.queryForIndexes())
 		indexRows, err := p.db.Query(p.queryForIndexes(), tableOid)
 		if err != nil {
-			log.Errorf("Failed to query indexes of '%s', err : '%s' ",name, err.Error())
+			log.Errorf("Failed to query indexes of '%s', err : '%s'\n\n ",name, err.Error())
 			return errors.WithStack(err)
 		}
 		defer indexRows.Close()
@@ -335,7 +319,7 @@ ORDER BY tgrelid`
 			)
 			err = indexRows.Scan(&indexName, &indexDef, pq.Array(&indexColumnNames), &indexComment)
 			if err != nil {
-				log.Errorf("Failed to scan indexRows of '%s', err : '%s' ",name, err.Error())
+				log.Errorf("Failed to scan indexRows of '%s', err : '%s' \n",name, err.Error())
 				return errors.WithStack(err)
 			}
 			index := &schema.Index{
@@ -346,7 +330,7 @@ ORDER BY tgrelid`
 				Comment: indexComment.String,
 			}
 			indexJson, _ := json.Marshal(index)
-			log.Infof("%s\n", indexJson)
+			log.Debugf("%s\n\n", indexJson)
 			indexes = append(indexes, index)
 		}
 		table.Indexes = indexes
@@ -354,10 +338,14 @@ ORDER BY tgrelid`
 		tables = append(tables, table)
 		tablesJson, _ := json.Marshal(tables)
 
-		log.Infof("Final table '%s' struct", name)
-		log.Infof("%s\n\n\n\n", tablesJson)
+		log.Debugf("Final table '%s' struct", name)
+		log.Debugf("%s\n\n\n\n", tablesJson)
 	}
 	s.Tables = tables
+	log.Infof("Total '%d' tables scnaned.", len(tables))
+	for _, t := range s.Tables{
+		log.Infof("name:'%s',  type:'%s'", t.Name, t.Type)
+	}
 
 	// Relations
 	for _, r := range relations {
@@ -433,13 +421,13 @@ ORDER BY tgrelid`
 func (p *Postgres) Info() (*schema.Driver, error) {
 	var v string
 	const selectVersionQuery = "SELECT version();"
-	log.Infof("Running query : '%s\n'",selectVersionQuery)
+	log.Infof("Running query : '%s'",selectVersionQuery)
 	row := p.db.QueryRow(selectVersionQuery)
 	err := row.Scan(&v)
 	if err != nil {
 		return nil, err
 	}
-	log.Infof("Output : '%s'",v)
+	log.Infof("Output : '%s'\n\n",v)
 	name := "postgres"
 	if p.rsMode {
 		name = "redshift"
