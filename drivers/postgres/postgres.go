@@ -22,13 +22,15 @@ var reVersion = regexp.MustCompile(`([0-9]+(\.[0-9]+)*)`)
 type Postgres struct {
 	db     *sql.DB
 	rsMode bool
+	currentSchema string
 }
 
 // New return new Postgres
-func New(db *sql.DB) *Postgres {
+func New(db *sql.DB, currentSchema string) *Postgres {
 	return &Postgres{
 		db:     db,
 		rsMode: false,
+		currentSchema: currentSchema,
 	}
 }
 
@@ -61,7 +63,11 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 	}
 	log.Infof("set current schema : '%s'\n\n",currentSchema)
 
-	s.Driver.Meta.CurrentSchema = currentSchema
+	if p.currentSchema !="" {
+		s.Driver.Meta.CurrentSchema = currentSchema
+	}else {
+		s.Driver.Meta.CurrentSchema = p.currentSchema
+	}
 
 	// search_path
 	var searchPaths string
@@ -89,7 +95,10 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 	fullTableNames := []string{}
 
 	// tables
-	var tablesDetailsQuery = "SELECT\n    cls.oid AS oid,\n    cls.relname AS table_name,\n    CASE\n        WHEN cls.relkind IN ('r', 'p') THEN 'BASE TABLE'\n        WHEN cls.relkind = 'v' THEN 'VIEW'\n        WHEN cls.relkind = 'm' THEN 'MATERIALIZED VIEW'\n        WHEN cls.relkind = 'f' THEN 'FOREIGN TABLE'\n    END AS table_type,\n    ns.nspname AS table_schema,\n    descr.description AS table_comment\nFROM pg_class AS cls\nINNER JOIN pg_namespace AS ns ON cls.relnamespace = ns.oid\nLEFT JOIN pg_description AS descr ON cls.oid = descr.objoid AND descr.objsubid = 0\nWHERE ns.nspname NOT IN ('pg_catalog', 'information_schema') \nAND ns.nspname ='"+currentSchema+"' \nAND cls.relkind IN ('r', 'p', 'v', 'f', 'm')\nORDER BY oid";
+	var tablesDetailsQuery = "SELECT\n    cls.oid AS oid,\n    cls.relname AS table_name,\n    CASE\n        WHEN cls.relkind IN ('r', 'p') THEN 'BASE TABLE'\n        WHEN cls.relkind = 'v' THEN 'VIEW'\n        WHEN cls.relkind = 'm' THEN 'MATERIALIZED VIEW'\n        WHEN cls.relkind = 'f' THEN 'FOREIGN TABLE'\n    END AS table_type,\n    ns.nspname AS table_schema,\n    descr.description AS table_comment\nFROM pg_class AS cls\nINNER JOIN pg_namespace AS ns ON cls.relnamespace = ns.oid\nLEFT JOIN pg_description AS descr ON cls.oid = descr.objoid AND descr.objsubid = 0\nWHERE ns.nspname NOT IN ('pg_catalog', 'information_schema') \nAND cls.relkind IN ('r', 'p', 'v', 'f', 'm')\nORDER BY oid";
+	if p.currentSchema !="" {
+		tablesDetailsQuery = "SELECT\n    cls.oid AS oid,\n    cls.relname AS table_name,\n    CASE\n        WHEN cls.relkind IN ('r', 'p') THEN 'BASE TABLE'\n        WHEN cls.relkind = 'v' THEN 'VIEW'\n        WHEN cls.relkind = 'm' THEN 'MATERIALIZED VIEW'\n        WHEN cls.relkind = 'f' THEN 'FOREIGN TABLE'\n    END AS table_type,\n    ns.nspname AS table_schema,\n    descr.description AS table_comment\nFROM pg_class AS cls\nINNER JOIN pg_namespace AS ns ON cls.relnamespace = ns.oid\nLEFT JOIN pg_description AS descr ON cls.oid = descr.objoid AND descr.objsubid = 0\nWHERE ns.nspname NOT IN ('pg_catalog', 'information_schema') \nAND ns.nspname ='"+p.currentSchema+"' \nAND cls.relkind IN ('r', 'p', 'v', 'f', 'm')\nORDER BY oid";
+	}
 	log.Infof("Running query to get tables : '%s'",tablesDetailsQuery)
 	tableRows, err := p.db.Query(tablesDetailsQuery)
 	if err != nil {

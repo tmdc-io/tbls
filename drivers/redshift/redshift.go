@@ -8,11 +8,12 @@ import (
 
 type Redshift struct {
 	postgres.Postgres
+	currentSchema string
 }
 
 // New return new Redshift
-func New(db *sql.DB) *Redshift {
-	p := postgres.New(db)
+func New(db *sql.DB, currentSchema string) *Redshift {
+	p := postgres.New(db, currentSchema)
 	p.EnableRsMode()
-	return &Redshift{*p}
+	return &Redshift{*p, currentSchema}
 }

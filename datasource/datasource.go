@@ -88,15 +88,16 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 	switch u.Driver {
 	case "postgres":
 		s.Name = splitted[1]
+		currentSchema := getCurrentSchema(u.RawQuery)
 		if u.Scheme == "rs" || u.Scheme == "redshift" {
 			log.Infof("Driver : '%s' and Scheme '%s'",u.Driver, u.Scheme)
 			log.Info("Obtaining connection...")
-			driver = redshift.New(db)
+			driver = redshift.New(db, currentSchema)
 			log.Info("Connection established")
 		} else {
 			log.Infof("Driver : '%s' and Scheme '%s'",u.Driver, u.Scheme)
 			log.Info("Obtaining connection...")
-			driver = postgres.New(db)
+			driver = postgres.New(db, currentSchema)
 			log.Info("Connection established")
 		}
 	case "mysql":
@@ -181,6 +182,7 @@ func AnalyzeHTTPResource(dsn config.DSN) (*schema.Schema, error) {
 	return s, nil
 }
 
+
 // AnalyzeJSON analyze `json://`
 func AnalyzeJSON(urlstr string) (*schema.Schema, error) {
 	s := &schema.Schema{}
@@ -229,4 +231,15 @@ func AnalyzeJSONStringOrFile(strOrPath string) (s *schema.Schema, err error) {
 		return s, errors.WithStack(err)
 	}
 	return s, nil
+}
+
+//
+func getCurrentSchema(query string) string {
+	if query !="" {
+		currentSchema := strings.Split(query, "=");
+		if currentSchema[0] == "currentSchema" {
+			 return currentSchema[1];
+		}
+	}
+	return ""
 }
