@@ -141,6 +141,7 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 	log.Info("Analyzing...")
 	err = driver.Analyze(s)
 	if err != nil {
+		log.Errorf("Analyze: Failed analyizing : '%s' ",err.Error())
 		return s, err
 	}
 	return s, nil
@@ -151,6 +152,7 @@ func AnalyzeHTTPResource(dsn config.DSN) (*schema.Schema, error) {
 	s := &schema.Schema{}
 	req, err := http.NewRequest("GET", dsn.URL, nil)
 	if err != nil {
+		log.Errorf("AnalyzeHTTPResource: Failed to make request : '%s' ",err.Error())
 		return s, errors.WithStack(err)
 	}
 	for k, v := range dsn.Headers {
@@ -159,14 +161,17 @@ func AnalyzeHTTPResource(dsn config.DSN) (*schema.Schema, error) {
 	client := &http.Client{Timeout: time.Duration(10) * time.Second}
 	resp, err := client.Do(req)
 	if err != nil {
+		log.Errorf("Http error : '%s' ",err.Error())
 		return s, errors.WithStack(err)
 	}
 	defer resp.Body.Close()
 	dec := json.NewDecoder(resp.Body)
 	if err := dec.Decode(s); err != nil {
+		log.Errorf(":AnalyzeHTTPResource: Failed decoding : '%s' ",err.Error())
 		return s, errors.WithStack(err)
 	}
 	if err := s.Repair(); err != nil {
+		log.Errorf("AnalyzeHTTPResource: Failed repairing : '%s' ",err.Error())
 		return s, errors.WithStack(err)
 	}
 	return s, nil
@@ -178,13 +183,16 @@ func AnalyzeJSON(urlstr string) (*schema.Schema, error) {
 	splitted := strings.Split(urlstr, "json://")
 	file, err := os.Open(splitted[1])
 	if err != nil {
+		log.Errorf("AnalyzeJSON: Failed to open : '%s' ",err.Error())
 		return s, errors.WithStack(err)
 	}
 	dec := json.NewDecoder(file)
 	if err := dec.Decode(s); err != nil {
+		log.Errorf("AnalyzeJSON: Failed decoding : '%s' ",err.Error())
 		return s, errors.WithStack(err)
 	}
 	if err := s.Repair(); err != nil {
+		log.Errorf("AnalyzeJSON: Failed repairing : '%s' ",err.Error())
 		return s, errors.WithStack(err)
 	}
 	return s, nil
@@ -209,9 +217,11 @@ func AnalyzeJSONStringOrFile(strOrPath string) (s *schema.Schema, err error) {
 	}
 	dec := json.NewDecoder(buf)
 	if err := dec.Decode(s); err != nil {
+		log.Errorf("AnalyzeJSONString: Failed decoding : '%s' ",err.Error())
 		return s, errors.WithStack(err)
 	}
 	if err := s.Repair(); err != nil {
+		log.Errorf("AnalyzeJSONString: Failed reparing : '%s' ",err.Error())
 		return s, errors.WithStack(err)
 	}
 	return s, nil

@@ -36,6 +36,7 @@ func New(db *sql.DB) *Postgres {
 func (p *Postgres) Analyze(s *schema.Schema) error {
 	d, err := p.Info()
 	if err != nil {
+		log.Errorf("Failed to query database info, err : '%s' ",err.Error())
 		return errors.WithStack(err)
 	}
 	s.Driver = d
@@ -46,12 +47,14 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 	log.Infof("Running query to get current shcema : '%s\n'",CurrentSchemaQuery)
 	schemaRows, err := p.db.Query(CurrentSchemaQuery)
 	if err != nil {
+		log.Errorf("Failed to query current shcema, err : '%s' ",err.Error())
 		return errors.WithStack(err)
 	}
 	defer schemaRows.Close()
 	for schemaRows.Next() {
 		err := schemaRows.Scan(&currentSchema)
 		if err != nil {
+			log.Errorf("Failed to scan schemaRows, err : '%s' ",err.Error())
 			return errors.WithStack(err)
 		}
 		log.Infof("Output : '%s'",currentSchema)
@@ -66,6 +69,7 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 	log.Infof("Running query to get paths : '%s\n'",searchPathQuery)
 	pathRows, err := p.db.Query(searchPathQuery)
 	if err != nil {
+		log.Errorf("Failed query to get search paths, err : '%s' ",err.Error())
 		return errors.WithStack(err)
 	}
 	defer pathRows.Close()
@@ -73,6 +77,7 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 		err := pathRows.Scan(&searchPaths)
 		log.Infof("Output : '%s'",searchPaths)
 		if err != nil {
+			log.Errorf("Failed to scan pathRows, err : '%s' ",err.Error())
 			return errors.WithStack(err)
 		}
 	}
@@ -104,6 +109,7 @@ ORDER BY oid`;
 	log.Infof("Running query to get tables : '%s\n'",tablesDetailsQuery)
 	tableRows, err := p.db.Query(tablesDetailsQuery)
 	if err != nil {
+		log.Errorf("Failed to query tables detail, err : '%s' ",err.Error())
 		return errors.WithStack(err)
 	}
 	defer tableRows.Close()
@@ -123,6 +129,7 @@ ORDER BY oid`;
 		err := tableRows.Scan(&tableOid, &tableName, &tableType, &tableSchema, &tableComment)
 
 		if err != nil {
+			log.Errorf("Failed to scan tableRows, err : '%s' ",err.Error())
 			return errors.WithStack(err)
 		}
 
@@ -145,6 +152,7 @@ ORDER BY oid`;
 			log.Infof("Running query : '%s\n'",viewDefinitionQuery)
 			viewDefRows, err := p.db.Query(viewDefinitionQuery, tableOid)
 			if err != nil {
+				log.Errorf("Failed to query view definition of '%s', err : '%s' ",name, err.Error())
 				return errors.WithStack(err)
 			}
 			defer viewDefRows.Close()
@@ -152,6 +160,7 @@ ORDER BY oid`;
 				var tableDef sql.NullString
 				err := viewDefRows.Scan(&tableDef)
 				if err != nil {
+					log.Errorf("Failed to scan viewDefRows, err : '%s' ",err.Error())
 					return errors.WithStack(err)
 				}
 				log.Infof("Table definition : '%s'",tableDef.String)
@@ -164,6 +173,7 @@ ORDER BY oid`;
 		log.Infof("Running query to get '%s' constraints : '%s\n'", name, p.queryForConstraints())
 		constraintRows, err := p.db.Query(p.queryForConstraints(), tableOid)
 		if err != nil {
+			log.Errorf("Failed to query constraints of '%s', err : '%s' ",name, err.Error())
 			return errors.WithStack(err)
 		}
 		defer constraintRows.Close()
@@ -182,6 +192,7 @@ ORDER BY oid`;
 			)
 			err = constraintRows.Scan(&constraintName, &constraintDef, &constraintType, &constraintReferencedTable, pq.Array(&constraintColumnNames), pq.Array(&constraintReferencedColumnNames), &constraintComment)
 			if err != nil {
+				log.Errorf("Failed to scan constraintRows, err : '%s' ", err.Error())
 				return errors.WithStack(err)
 			}
 			rt := constraintReferencedTable.String
@@ -223,6 +234,7 @@ ORDER BY tgrelid`
 			log.Infof("Running query to get '%s' triggers : '%s\n'", name, triggerQuery)
 			triggerRows, err := p.db.Query(triggerQuery, tableOid)
 			if err != nil {
+				log.Errorf("Failed to query triggers of '%s', err : '%s' ",name, err.Error())
 				return errors.WithStack(err)
 			}
 			defer triggerRows.Close()
@@ -236,6 +248,7 @@ ORDER BY tgrelid`
 				)
 				err = triggerRows.Scan(&triggerName, &triggerDef, &triggerComment)
 				if err != nil {
+					log.Errorf("Failed to scan triggerRows of '%s', err : '%s' ",name, err.Error())
 					return errors.WithStack(err)
 				}
 				trigger := &schema.Trigger{
@@ -255,11 +268,13 @@ ORDER BY tgrelid`
 		columnStmt, err := p.queryForColumns(s.Driver.DatabaseVersion)
 
 		if err != nil {
+			log.Errorf("Failed to create query for column statement., err : '%s' ", err.Error())
 			return errors.WithStack(err)
 		}
 		log.Infof("Running query to get '%s' columns : '%s\n'", name, columnStmt)
 		columnRows, err := p.db.Query(columnStmt, tableOid)
 		if err != nil {
+			log.Errorf("Failed to query columns of '%s', err : '%s' ",name, err.Error())
 			return errors.WithStack(err)
 		}
 		defer columnRows.Close()
@@ -276,6 +291,7 @@ ORDER BY tgrelid`
 			)
 			err = columnRows.Scan(&columnName, &columnDefaultOrGenerated, &attrgenerated, &isNullable, &dataType, &columnComment)
 			if err != nil {
+				log.Errorf("Failed to scan columnRows of '%s', err : '%s' ",name, err.Error())
 				return errors.WithStack(err)
 			}
 			column := &schema.Column{
@@ -304,6 +320,7 @@ ORDER BY tgrelid`
 		log.Infof("Running query to get '%s' indexes : '%s\n'", name, p.queryForIndexes())
 		indexRows, err := p.db.Query(p.queryForIndexes(), tableOid)
 		if err != nil {
+			log.Errorf("Failed to query indexes of '%s', err : '%s' ",name, err.Error())
 			return errors.WithStack(err)
 		}
 		defer indexRows.Close()
@@ -318,6 +335,7 @@ ORDER BY tgrelid`
 			)
 			err = indexRows.Scan(&indexName, &indexDef, pq.Array(&indexColumnNames), &indexComment)
 			if err != nil {
+				log.Errorf("Failed to scan indexRows of '%s', err : '%s' ",name, err.Error())
 				return errors.WithStack(err)
 			}
 			index := &schema.Index{
@@ -359,6 +377,7 @@ ORDER BY tgrelid`
 		for _, c := range strColumns {
 			column, err := r.Table.FindColumnByName(c)
 			if err != nil {
+				log.Errorf("err : '%s' ",err.Error())
 				return err
 			}
 			r.Columns = append(r.Columns, column)
@@ -367,17 +386,20 @@ ORDER BY tgrelid`
 
 		dn, err := detectFullTableName(strParentTable, s.Driver.Meta.SearchPaths, fullTableNames)
 		if err != nil {
+			log.Errorf("err : '%s' ",err.Error())
 			return err
 		}
 		strParentTable = dn
 		parentTable, err := s.FindTableByName(strParentTable)
 		if err != nil {
+			log.Errorf("err : '%s' ",err.Error())
 			return err
 		}
 		r.ParentTable = parentTable
 		for _, c := range strParentColumns {
 			column, err := parentTable.FindColumnByName(c)
 			if err != nil {
+				log.Errorf("err : '%s' ",err.Error())
 				return err
 			}
 			r.ParentColumns = append(r.ParentColumns, column)
@@ -395,6 +417,7 @@ ORDER BY tgrelid`
 		for _, rts := range ddl.ParseReferencedTables(t.Def) {
 			rt, err := s.FindTableByName(rts)
 			if err != nil {
+				log.Errorf("err : '%s' ",err.Error())
 				rt = &schema.Table{
 					Name:     rts,
 					External: true,
